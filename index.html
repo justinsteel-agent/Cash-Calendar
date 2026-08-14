@@ -28,7 +28,9 @@
 function showErr(m){var e=document.getElementById('err');e.style.display='block';e.textContent=m;}
 window.onerror=function(m,s,l,c,err){showErr('ERROR: '+m+'\nline '+l+':'+c+(err&&err.stack?'\n'+err.stack:''));};
 </script>
-<script>/**
+<script>
+(function(){'use strict';
+/**
  * @license React
  * react.production.min.js
  *
@@ -59,8 +61,11 @@ render:a}};c.isValidElement=M;c.lazy=function(a){return{$$typeof:Aa,_payload:{_s
 c.useEffect=function(a,b){return g.current.useEffect(a,b)};c.useId=function(){return g.current.useId()};c.useImperativeHandle=function(a,b,c){return g.current.useImperativeHandle(a,b,c)};c.useInsertionEffect=function(a,b){return g.current.useInsertionEffect(a,b)};c.useLayoutEffect=function(a,b){return g.current.useLayoutEffect(a,b)};c.useMemo=function(a,b){return g.current.useMemo(a,b)};c.useReducer=function(a,b,c){return g.current.useReducer(a,b,c)};c.useRef=function(a){return g.current.useRef(a)};
 c.useState=function(a){return g.current.useState(a)};c.useSyncExternalStore=function(a,b,c){return g.current.useSyncExternalStore(a,b,c)};c.useTransition=function(){return g.current.useTransition()};c.version="18.3.1"});
 })();
+})();
 </script>
-<script>/**
+<script>
+(function(){'use strict';
+/**
  * @license React
  * react-dom.production.min.js
  *
@@ -327,290 +332,180 @@ c,!1,d,e);a[Ja]=b.current;sc(8===a.nodeType?a.parentNode:a);return new Xf(b)};Q.
 var d=null!=c&&c.hydratedSources||null,e=!1,f="",g=aj;null!==c&&void 0!==c&&(!0===c.unstable_strictMode&&(e=!0),void 0!==c.identifierPrefix&&(f=c.identifierPrefix),void 0!==c.onRecoverableError&&(g=c.onRecoverableError));b=Wi(b,null,a,1,null!=c?c:null,e,!1,f,g);a[Ja]=b.current;sc(a);if(d)for(a=0;a<d.length;a++)c=d[a],e=c._getVersion,e=e(c._source),null==b.mutableSourceEagerHydrationData?b.mutableSourceEagerHydrationData=[c,e]:b.mutableSourceEagerHydrationData.push(c,e);return new Ud(b)};Q.render=
 function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmountComponentAtNode=function(a){if(!Vd(a))throw Error(m(40));return a._reactRootContainer?(yb(function(){Wd(null,null,a,!1,function(){a._reactRootContainer=null;a[Ja]=null})}),!0):!1};Q.unstable_batchedUpdates=Tf;Q.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!Vd(c))throw Error(m(200));if(null==a||void 0===a._reactInternals)throw Error(m(38));return Wd(a,b,c,!1,d)};Q.version="18.3.1-next-f1338f8080-20240426"});
 })();
+})();
 </script>
 <script>
 try {
+const h = React.createElement;
+
 /* ---------- localStorage persistence ---------- */
-const KEY = "steel-cash-v1";
-const load = () => {
-  try {
-    return JSON.parse(localStorage.getItem(KEY)) || {};
-  } catch {
-    return {};
-  }
-};
+const KEY = "steel-cash-v2";
+const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } };
 const saved = load();
-const save = (k, v) => {
-  try {
-    const s = load();
-    s[k] = v;
-    localStorage.setItem(KEY, JSON.stringify(s));
-  } catch {}
-};
+const save = (k, v) => { try { const s = load(); s[k] = v; localStorage.setItem(KEY, JSON.stringify(s)); } catch {} };
 function useSaved(key, init) {
   const [v, setV] = React.useState(saved[key] !== undefined ? saved[key] : init);
-  return [v, nv => {
-    const val = typeof nv === "function" ? nv(v) : nv;
-    setV(val);
-    save(key, val);
-  }];
+  return [v, nv => { const val = typeof nv === "function" ? nv(v) : nv; setV(val); save(key, val); }];
 }
 
 /* ---------- tokens ---------- */
-const C = {
-  ground: "#131E1C",
-  panel: "#1B2A27",
-  panel2: "#213230",
-  line: "#2C403B",
-  paper: "#E6E1D4",
-  dim: "#8A9E98",
-  brass: "#C08F4A",
-  signal: "#C4553D",
-  green: "#6E9E85"
-};
+const C = { ground:"#131E1C", panel:"#1B2A27", panel2:"#213230", line:"#2C403B",
+  paper:"#E6E1D4", dim:"#8A9E98", brass:"#C08F4A", signal:"#C4553D", green:"#6E9E85" };
 const MONO = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
 const DISP = "'Oswald', 'Arial Narrow', 'Helvetica Neue', sans-serif";
 const BODY = "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
 const usd = n => (n < 0 ? "-" : "") + "$" + Math.abs(Math.round(n)).toLocaleString();
 
-/* ---------- seed: live SureSend pipeline ---------- */
-const SEED_PIPELINE = [{
-  id: 1,
-  name: "Rion St — both sides",
-  side: "Listing",
-  value: 165000,
-  stage: "Under Contract",
-  close: "2026-08-24",
-  rate: 3,
-  net: 500
-}, {
-  id: 4,
-  name: "Melson – 810 River Oaks Cir",
-  side: "Listing",
-  value: 1385000,
-  stage: "Listing Won",
-  close: "",
-  rate: 3
-}, {
-  id: 5,
-  name: "Wilder – 640 Whispering Pines",
-  side: "Listing",
-  value: 850000,
-  stage: "Listing Won",
-  close: "",
-  rate: 3
-}, {
-  id: 6,
-  name: "Bang – 979 Club Circle",
-  side: "Listing",
-  value: 730000,
-  stage: "Seller Consult",
-  close: "",
-  rate: 3
-}, {
-  id: 7,
-  name: "41 Spicebush Lane",
-  side: "Listing",
-  value: 750000,
-  stage: "Seller Consult",
-  close: "",
-  rate: 3
-}, {
-  id: 8,
-  name: "Kennerly – 155 Berkshire Loop",
-  side: "Listing",
-  value: 680000,
-  stage: "Seller Consult",
-  close: "",
-  rate: 3
-}, {
-  id: 9,
-  name: "Fontana – 3 Car Garage",
-  side: "Buyer",
-  value: 1000000,
-  stage: "Property Search",
-  close: "",
-  rate: 3
-}, {
-  id: 10,
-  name: "Smalls – TBD Kent Rd",
-  side: "Listing",
-  value: 99500,
-  stage: "Listed on MLS",
-  close: "",
-  rate: 3
-}, {
-  id: 11,
-  name: "Parents' property",
-  side: "Listing",
-  value: 0,
-  stage: "Under Contract",
-  close: "2026-08-29",
-  rate: 0,
-  flat: 37500
+/* ---------- live SureSend feed ---------- */
+// Published Raw_Contracts tab — the same CSV the pipeline dashboard reads.
+// The SureSend API cannot be called directly from here: the token would be
+// public in this file, and the browser would hit CORS regardless.
+const RAW_CONTRACTS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5p3_GYBrPG_-skbMKvJA2MLYWvokTjWMI4P_gDrCbzsp3QTmSezrLoo2uFP9GraJdJ2XBF7oO9-J2/pub?gid=2028906285&single=true&output=csv";
+
+// TSG spine position by stage name. Position drives what counts, so a
+// renamed stage degrades to "unknown" rather than silently miscounting.
+const SPINE_POS = {
+  "Prospecting":0,
+  "Consultation Scheduled":1, "Seller Consultation Scheduled":1, "Initial Consultation":1,
+  "Consultation Held":2, "Listing Presentation":2,
+  "Agreement Signed":3, "Listing Won":3, "Listing Agreement Signed":3,
+  "Active":4, "Listed on MLS":4, "Property Search":4, "Showing Property":4, "First Open House":4,
+  "Negotiations":5, "Offer Received":5, "Offer Submitted":5,
+  "Under Contract":6, "Pending":6, "Offer Accepted":6,
+  "Clear to Close":7, "Final Walk-Through":7,
+  "Closed":8, "Transaction Closed":8,
+  "Terminated":9
+};
+
+function parseCSV(text) {
+  const rows = []; let row = [], field = "", inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i], n = text[i+1];
+    if (inQ) {
+      if (c === '"' && n === '"') { field += '"'; i++; }
+      else if (c === '"') inQ = false;
+      else field += c;
+    } else {
+      if (c === '"') inQ = true;
+      else if (c === ",") { row.push(field); field = ""; }
+      else if (c === "\r") {}
+      else if (c === "\n") { row.push(field); rows.push(row); row = []; field = ""; }
+      else field += c;
+    }
+  }
+  if (field.length || row.length) { row.push(field); rows.push(row); }
+  return rows.filter(r => r.length > 1);
+}
+
+// Maps a Raw_Contracts row to this app's deal shape. Only live deals —
+// Closed and Terminated are history and never affect forward cash.
+function rowToDeal(r) {
+  if (r.deletedAt) return null;
+  const stage = (r.primaryPipelineStageName || "").trim();
+  const pos = SPINE_POS[stage];
+  if (pos === undefined || pos >= 8) return null;
+  const type = (r.contractType || "").toLowerCase();
+  const side = type.indexOf("buyer") !== -1 ? "Buyer" : "Listing";
+  const value = parseFloat(r.contractValue) || 0;
+  const gross = parseFloat(r.totalCommission);
+  const close = (r.actualClosingDate || r.scheduledClosingDate || "").slice(0, 10);
+  return {
+    id: r.id, name: r.name || "(unnamed)", side, value, stage, pos,
+    close: /^\d{4}-\d{2}-\d{2}$/.test(close) ? close : "",
+    // Real commission when entered; 3% placeholder otherwise.
+    gross: (!isNaN(gross) && gross > 0) ? gross : null,
+    rate: 3, live: true
+  };
+}
+
+/* ---------- commission draws ---------- */
+// Money already advanced against a commission that has not wired yet. The
+// CRM records the full commission earned; the draw is a debt repaid out of
+// those proceeds. Modeling both keeps GCI honest and cash accurate — netting
+// them into one number hides the debt entirely.
+// dealId ties the repayment to a contract, so it follows if the close moves.
+const SEED_DRAWS = [{
+  id: "d-rion",
+  name: "Commission draw — Rion St",
+  dealId: "019f85ba-100d-7f58-9037-035318727f15",
+  amt: 4475,
+  note: "advanced against Rion St proceeds"
 }];
-const grossOf = d => d.flat != null ? d.flat : d.value * (d.rate / 100);
+
+/* ---------- manual deals: things SureSend does not model ---------- */
+const MANUAL_DEALS = [{
+  id: "m-parents", name: "Parents' property", side: "Listing", value: 0,
+  stage: "Under Contract", pos: 6, close: "2026-08-29", rate: 0, flat: 37500
+}];
+
+// Real commission wins over rate × value. A signed listing has a known
+// commission; an unentered one falls back to the placeholder rate.
+const grossOf = d => d.flat != null ? d.flat
+  : (d.gross != null ? d.gross : d.value * (d.rate / 100));
 const netOf = (d, split) => d.net != null ? d.net : grossOf(d) * (split / 100);
+const posOf = d => d.pos !== undefined ? d.pos : (SPINE_POS[d.stage] ?? 4);
+
 /* what counts:
-   listings  -> signed listings count; consultations never do
-   buyers    -> only if genuinely under contract with a close date  */
+   listings -> signed agreement or later; consultations never do
+   buyers   -> only genuinely under contract with a close date */
 const counts = d => {
-  if (d.stage === "Seller Consult") return false;
-  if (d.side === "Buyer") return d.stage === "Under Contract" && !!d.close;
+  const p = posOf(d);
+  if (p >= 8) return false;
+  if (p <= 2) return false;
+  if (d.side === "Buyer") return p >= 6 && !!d.close;
   return true;
 };
 const whyOut = d => {
-  if (d.stage === "Seller Consult") return "excluded — consultation";
-  if (d.side === "Buyer") return "excluded — buyer, not under contract";
+  const p = posOf(d);
+  if (p >= 9) return "excluded — terminated";
+  if (p <= 2) return "excluded — consultation";
+  if (d.side === "Buyer" && p < 6) return "excluded — buyer, not under contract";
+  if (d.side === "Buyer" && !d.close) return "excluded — buyer, no close date";
   return "excluded";
 };
-const STAGE_ODDS = {
-  "Under Contract": 0.9,
-  "Offer Submitted": 0.7,
-  "Listing Won": 0.45,
-  "Listed on MLS": 0.4,
-  "Seller Consult": 0.2,
-  "Property Search": 0.15
-};
+const POS_ODDS = { 3:0.45, 4:0.5, 5:0.7, 6:0.9, 7:0.95 };
+const oddsOf = d => POS_ODDS[posOf(d)] ?? 0.5;
 
 /* power bill by month index */
-const POWER = [1000, 900, 700, 550, 500, 550, 600, 600, 550, 450, 500, 800];
-const SEED_BILLS = [{
-  id: "a",
-  name: "Groceries",
-  amt: 1500,
-  day: 1,
-  kind: "Variable"
-}, {
-  id: "b",
-  name: "Gas",
-  amt: 500,
-  day: 1,
-  kind: "Variable"
-}, {
-  id: "c",
-  name: "Kids",
-  amt: 500,
-  day: 1,
-  kind: "Variable"
-}, {
-  id: "d",
-  name: "Adults",
-  amt: 500,
-  day: 1,
-  kind: "Variable"
-}, {
-  id: "e",
-  name: "Power",
-  amt: 0,
-  day: 12,
-  kind: "Utility",
-  seasonal: true
-}, {
-  id: "f",
-  name: "Water + Trash",
-  amt: 104,
-  day: 15,
-  kind: "Utility"
-}, {
-  id: "g",
-  name: "Phone",
-  amt: 200,
-  day: 18,
-  kind: "Utility"
-}, {
-  id: "h",
-  name: "Internet",
-  amt: 80,
-  day: 20,
-  kind: "Utility"
-}, {
-  id: "i",
-  name: "Streaming",
-  amt: 100,
-  day: 22,
-  kind: "Utility"
-}, {
-  id: "j",
-  name: "Car insurance",
-  amt: 350,
-  day: 5,
-  kind: "Insurance"
-}, {
-  id: "k",
-  name: "Home insurance",
-  amt: 450,
-  day: 5,
-  kind: "Insurance"
-}, {
-  id: "o",
-  name: "Family loan",
-  amt: 600,
-  day: 1,
-  kind: "Obligation"
-}, {
-  id: "p",
-  name: "Tax reserve",
-  amt: 1800,
-  day: 15,
-  kind: "Tax"
-}];
-const SEED_ANNUAL = [{
-  id: "x1",
-  name: "Christmas",
-  month: 11,
-  day: 20,
-  amt: 2000
-}, {
-  id: "x2",
-  name: "Family vacation",
-  month: 6,
-  day: 1,
-  amt: 5000
-}, {
-  id: "x3",
-  name: "Tuition — spring half",
-  month: 0,
-  day: 15,
-  amt: 8500
-}, {
-  id: "x4",
-  name: "Tuition — fall half",
-  month: 7,
-  day: 15,
-  amt: 8500,
-  paid: true
-}];
+const POWER = [1000,900,700,550,500,550,600,600,550,450,500,800];
+const SEED_BILLS = [
+  {id:"a",name:"Groceries",amt:1500,day:1,kind:"Variable"},
+  {id:"b",name:"Gas",amt:500,day:1,kind:"Variable"},
+  {id:"c",name:"Kids",amt:500,day:1,kind:"Variable"},
+  {id:"d",name:"Adults",amt:500,day:1,kind:"Variable"},
+  {id:"e",name:"Power",amt:0,day:12,kind:"Utility",seasonal:true},
+  {id:"f",name:"Water + Trash",amt:104,day:15,kind:"Utility"},
+  {id:"g",name:"Phone",amt:200,day:18,kind:"Utility"},
+  {id:"h",name:"Internet",amt:80,day:20,kind:"Utility"},
+  {id:"i",name:"Streaming",amt:100,day:22,kind:"Utility"},
+  {id:"j",name:"Car insurance",amt:350,day:5,kind:"Insurance"},
+  {id:"k",name:"Home insurance",amt:450,day:5,kind:"Insurance"},
+  {id:"o",name:"Family loan",amt:600,day:1,kind:"Obligation"},
+  {id:"p",name:"Tax reserve",amt:1800,day:15,kind:"Tax"}
+];
+const SEED_ANNUAL = [
+  {id:"x1",name:"Christmas",month:11,day:20,amt:2000},
+  {id:"x2",name:"Family vacation",month:6,day:1,amt:5000},
+  {id:"x3",name:"Tuition — spring half",month:0,day:15,amt:8500},
+  {id:"x4",name:"Tuition — fall half",month:7,day:15,amt:8500,paid:true}
+];
+const SEED_ARREARS = [
+  {id:"r1",name:"Electric — past due",date:"2026-08-31",amt:2000},
+  {id:"r2",name:"Phone — one behind",date:"2026-08-18",amt:200},
+  {id:"r3",name:"Internet — one behind",date:"2026-08-20",amt:80}
+];
+const KIND_COLOR = { Annual:"#B0754F", Variable:"#8A9E98", Utility:"#6E8C9E",
+  Insurance:"#9E8A6E", Debt:"#C08F4A", Fixed:"#7C918B", Obligation:"#C4553D", Tax:"#A0705C" };
 
-/* past-due, one time only */
-const SEED_ARREARS = [{
-  id: "r1",
-  name: "Electric — past due",
-  date: "2026-08-31",
-  amt: 2000
-}, {
-  id: "r2",
-  name: "Phone — one behind",
-  date: "2026-08-18",
-  amt: 200
-}, {
-  id: "r3",
-  name: "Internet — one behind",
-  date: "2026-08-20",
-  amt: 80
-}];
-const KIND_COLOR = {
-  Annual: "#B0754F",
-  Variable: "#8A9E98",
-  Utility: "#6E8C9E",
-  Insurance: "#9E8A6E",
-  Debt: "#C08F4A",
-  Fixed: "#7C918B",
-  Obligation: "#C4553D",
-  Tax: "#A0705C"
-};
+const inp = { width:"100%", background:C.ground, border:`1px solid ${C.line}`, color:C.paper,
+  fontFamily:MONO, fontSize:12, padding:"5px 7px", borderRadius:0, boxSizing:"border-box" };
+const lbl = { fontFamily:MONO, fontSize:9, color:C.dim, letterSpacing:1, textTransform:"uppercase" };
+const cap = { fontFamily:MONO, fontSize:10, letterSpacing:1.4, color:C.dim, textTransform:"uppercase" };
+
 function App() {
-  const [pipeline, setPipeline] = useSaved("pipeline", SEED_PIPELINE);
+  const [localDeals, setPipeline] = useSaved("pipeline", MANUAL_DEALS);
+  const [livePipeline, setLivePipeline] = React.useState(null);
+  const [feedState, setFeedState] = React.useState("loading");
   const [bills, setBills] = useSaved("bills", SEED_BILLS);
   const [openingBal, setOpeningBal] = useSaved("openingBal", 0);
   const [houseSplit, setHouseSplit] = useSaved("houseSplit", 50);
@@ -620,176 +515,158 @@ function App() {
   const [dom, setDom] = useSaved("dom", 105);
   const [annual] = useSaved("annual", SEED_ANNUAL);
   const [arrears] = useSaved("arrears", SEED_ARREARS);
+  const [draws, setDraws] = useSaved("draws", SEED_DRAWS);
   const [warnDays, setWarnDays] = useSaved("warnDays", 45);
   const [reserveMonths, setReserveMonths] = useSaved("reserveMonths", 6);
   const [loanRunRate, setLoanRunRate] = useSaved("loanRunRate", 2900);
   const [splitBiz, setSplitBiz] = useSaved("splitBiz", 50);
   const [splitIdx, setSplitIdx] = useSaved("splitIdx", 30);
   const [slip, setSlip] = useSaved("slip", 0);
-  const [safeBuffer, setSafeBuffer] = useSaved("safeBuffer", true);
-  // business P&L (monthly, on the 50% that stays in the company)
-  const [biz, setBiz] = useSaved("biz", [{
-    id: "b1",
-    name: "Agent splits",
-    amt: 2200
-  }, {
-    id: "b2",
-    name: "Marketing / lead gen",
-    amt: 1500
-  }, {
-    id: "b3",
-    name: "Transaction coordinator",
-    amt: 900
-  }, {
-    id: "b4",
-    name: "VA / admin",
-    amt: 800
-  }, {
-    id: "b5",
-    name: "Office, dues, MLS, E&O",
-    amt: 600
-  }, {
-    id: "b6",
-    name: "Software / CRM",
-    amt: 350
-  }]);
-  const [liabs, setLiabs] = useSaved("liabs", [{
-    id: "l1",
-    name: "IRS back returns",
-    amt: 0,
-    note: "notice received, amount unknown",
-    when: "unknown"
-  }, {
-    id: "l2",
-    name: "Health insurance cliff",
-    amt: 2000,
-    note: "monthly, when income clears Medicaid",
-    when: "at income transition"
-  }, {
-    id: "l3",
-    name: "Family loan principal",
-    amt: 391400,
-    note: "0% to you, 7.75% to your parents",
-    when: "ongoing"
-  }]);
+  const [savTarget, setSavTarget] = useSaved("savTarget", 30000);
   const [tab, setTab] = useSaved("tab", "calendar");
   const [loanBal, setLoanBal] = useSaved("loanBal", 391400);
   const [loanPay, setLoanPay] = useSaved("loanPay", 600);
-  const today = new Date(2026, 7, 8);
+  const [biz, setBiz] = useSaved("biz", [
+    {id:"b1",name:"Agent splits",amt:2200},
+    {id:"b2",name:"Marketing / lead gen",amt:1500},
+    {id:"b3",name:"Transaction coordinator",amt:900},
+    {id:"b4",name:"VA / admin",amt:800},
+    {id:"b5",name:"Office, dues, MLS, E&O",amt:600},
+    {id:"b6",name:"Software / CRM",amt:350}
+  ]);
+  const [liabs, setLiabs] = useSaved("liabs", [
+    {id:"l1",name:"IRS back returns",amt:0,note:"notice received, amount unknown",when:"unknown"},
+    {id:"l2",name:"Health insurance cliff",amt:2000,note:"monthly, when income clears Medicaid",when:"at income transition"},
+    {id:"l3",name:"Family loan principal",amt:391400,note:"0% to you, 7.75% to your parents",when:"ongoing"}
+  ]);
+
+  // Real clock. This was pinned to a fixed date, so every day count and the
+  // shortfall date drifted further out of true with each passing day.
+  const today = React.useMemo(() => {
+    const d = new Date(); d.setHours(0,0,0,0); return d;
+  }, []);
+
+  /* ---- live feed ---- */
+  const loadFeed = React.useCallback(() => {
+    setFeedState("loading");
+    fetch(RAW_CONTRACTS_CSV + "&cachebust=" + Date.now())
+      .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
+      .then(t => {
+        const table = parseCSV(t);
+        if (table.length < 2) throw new Error("empty CSV");
+        const head = table[0].map(x => x.trim());
+        const deals = table.slice(1).map(cells => {
+          const o = {}; head.forEach((k, i) => o[k] = cells[i]);
+          return rowToDeal(o);
+        }).filter(Boolean);
+        setLivePipeline(deals);
+        setFeedState("ok");
+      })
+      .catch(e => setFeedState("err:" + e.message));
+  }, []);
+  React.useEffect(() => { loadFeed(); }, [loadFeed]);
+
+  // Local entries persist (manual deals, net/flat/date overrides). Live deals
+  // merge in by contract id on every load, so a new deal in the CRM appears
+  // without touching code.
+  const pipeline = React.useMemo(() => {
+    if (!livePipeline) return localDeals;
+    const byId = new Map(localDeals.map(d => [String(d.id), d]));
+    const merged = livePipeline.map(live => {
+      const o = byId.get(String(live.id));
+      if (!o) return live;
+      return { ...live, close: o.close || live.close, rate: o.rate ?? live.rate,
+        net: o.net, flat: o.flat };
+    });
+    const liveIds = new Set(livePipeline.map(d => String(d.id)));
+    const manual = localDeals.filter(d => !liveIds.has(String(d.id)) && !d.live);
+    return [...merged, ...manual];
+  }, [localDeals, livePipeline]);
+
+  const upd = (setter, arr) => (id, k, v) =>
+    setter(arr.map(x => String(x.id) === String(id) ? { ...x, [k]: v } : x));
+  // Pipeline edits write an override row keyed to the live contract id.
+  const updDeal = (id, k, v) => {
+    const existing = localDeals.find(x => String(x.id) === String(id));
+    if (existing) setPipeline(localDeals.map(x => String(x.id) === String(id) ? { ...x, [k]: v } : x));
+    else {
+      const live = (livePipeline || []).find(x => String(x.id) === String(id));
+      setPipeline([...localDeals, { id, close: live ? live.close : "", rate: live ? live.rate : 3, [k]: v }]);
+    }
+  };
 
   /* ---- build event ledger ---- */
   const events = React.useMemo(() => {
     const out = [];
     pipeline.forEach(d => {
-      var _STAGE_ODDS$d$stage;
       if (!counts(d)) return;
-      let cd,
-        projected = false;
-      if (d.close) {
-        cd = new Date(d.close + "T12:00:00");
-      } else if (d.side === "Listing") {
-        cd = new Date(today);
-        cd.setDate(cd.getDate() + dom + slip);
-        projected = true;
-      } else {
-        return; // undated buyer deals contribute nothing
-      }
-      const wire = new Date(cd);
-      wire.setDate(wire.getDate() + lagDays);
-      const odds = weighted ? (_STAGE_ODDS$d$stage = STAGE_ODDS[d.stage]) !== null && _STAGE_ODDS$d$stage !== void 0 ? _STAGE_ODDS$d$stage : 0.5 : 1;
+      let cd, projected = false;
+      if (d.close) cd = new Date(d.close + "T12:00:00");
+      else if (d.side === "Listing") {
+        cd = new Date(today); cd.setDate(cd.getDate() + dom + slip); projected = true;
+      } else return;
+      const wire = new Date(cd); wire.setDate(wire.getDate() + lagDays);
+      const odds = weighted ? oddsOf(d) : 1;
+      const fmt = cd.toLocaleDateString("en-US", { month:"short", day:"numeric" });
       out.push({
-        date: wire,
-        label: d.name,
-        sub: projected ? `projected ${cd.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric"
-        })} · ${dom}d DOM · +${lagDays}d wire` : `closes ${cd.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric"
-        })} · +${lagDays}d wire`,
-        amt: netOf(d, houseSplit) * odds,
-        type: "in",
-        color: projected ? C.brass : C.green,
-        projected
+        date: wire, label: d.name,
+        sub: projected ? `projected ${fmt} · ${dom}d DOM · +${lagDays}d wire`
+                       : `closes ${fmt} · +${lagDays}d wire`,
+        amt: netOf(d, houseSplit) * odds, type:"in",
+        color: projected ? C.brass : C.green, projected
+      });
+      // Draw repaid out of the same wire, so it lands on the same date.
+      draws.filter(w => String(w.dealId) === String(d.id) && w.amt > 0).forEach(w => {
+        out.push({ date: new Date(wire), label: w.name, sub: "Draw repaid at closing",
+          amt: -w.amt, type:"out", color: C.signal });
       });
     });
-    const end = new Date(today);
-    end.setDate(end.getDate() + horizon);
+    const end = new Date(today); end.setDate(end.getDate() + horizon);
     let cur = new Date(today.getFullYear(), today.getMonth(), 1);
     while (cur <= end) {
-      const m = cur.getMonth(),
-        y = cur.getFullYear();
+      const m = cur.getMonth(), y = cur.getFullYear();
       const curMonth = m === today.getMonth() && y === today.getFullYear();
-      const daysInM = new Date(y, m + 1, 0).getDate();
+      const daysInM = new Date(y, m+1, 0).getDate();
       const leftFrac = (daysInM - today.getDate() + 1) / daysInM;
       bills.forEach(b => {
-        const d = new Date(y, m, Math.min(b.day, 28));
+        const dt = new Date(y, m, Math.min(b.day, 28));
         let amt = b.seasonal ? POWER[m] : b.amt;
-        let date = d,
-          sub = b.kind;
-        if (d < today) {
-          // already came due this month
-          if (!curMonth || b.kind !== "Variable") return; // fixed items are settled
-          amt = amt * leftFrac; // variable: only the rest of the month
-          date = new Date(today);
-          sub = `${b.kind} · rest of month`;
+        let date = dt, sub = b.kind;
+        if (dt < today) {
+          if (!curMonth || b.kind !== "Variable") return;
+          amt = amt * leftFrac; date = new Date(today); sub = `${b.kind} · rest of month`;
         }
         if (date > end || !amt) return;
-        out.push({
-          date,
-          label: b.name,
-          sub,
-          amt: -amt,
-          type: "out",
-          color: KIND_COLOR[b.kind]
-        });
+        out.push({ date, label:b.name, sub, amt:-amt, type:"out", color:KIND_COLOR[b.kind] });
       });
       annual.forEach(a => {
         if (a.month !== m || a.paid) return;
-        const d = new Date(y, m, a.day);
-        if (d < today || d > end) return;
-        out.push({
-          date: d,
-          label: a.name,
-          sub: "Annual",
-          amt: -a.amt,
-          type: "out",
-          color: KIND_COLOR.Annual
-        });
+        const dt = new Date(y, m, a.day);
+        if (dt < today || dt > end) return;
+        out.push({ date:dt, label:a.name, sub:"Annual", amt:-a.amt, type:"out", color:KIND_COLOR.Annual });
       });
-      cur = new Date(y, m + 1, 1);
+      cur = new Date(y, m+1, 1);
     }
     arrears.forEach(r => {
-      const d = new Date(r.date + "T12:00:00");
-      if (d < today || d > end) return;
-      out.push({
-        date: d,
-        label: r.name,
-        sub: "Past due",
-        amt: -r.amt,
-        type: "out",
-        color: C.signal
-      });
+      const dt = new Date(r.date + "T12:00:00");
+      if (dt < today || dt > end) return;
+      out.push({ date:dt, label:r.name, sub:"Past due", amt:-r.amt, type:"out", color:C.signal });
     });
-    out.sort((a, b) => a.date - b.date);
+    out.sort((a,b) => a.date - b.date);
     let bal = openingBal;
-    out.forEach(e => {
-      bal += e.amt;
-      e.bal = bal;
-    });
+    out.forEach(e => { bal += e.amt; e.bal = bal; });
     return out;
-  }, [pipeline, bills, openingBal, houseSplit, lagDays, weighted, horizon, dom, annual, arrears, slip]);
+  }, [pipeline, bills, openingBal, houseSplit, lagDays, weighted, horizon, dom, annual, arrears, draws, slip, today]);
+
   const chartData = React.useMemo(() => events.map(e => ({
-    d: e.date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric"
-    }),
+    d: e.date.toLocaleDateString("en-US", { month:"short", day:"numeric" }),
     bal: Math.round(e.bal)
   })), [events]);
+
   const monthlyBurn = React.useMemo(() => {
-    const avgPower = POWER.reduce((a, b) => a + b, 0) / 12;
-    const b = bills.reduce((sum, x) => sum + (x.seasonal ? avgPower : x.amt), 0);
-    const a = annual.reduce((sum, x) => sum + x.amt, 0) / 12; // both tuition halves count
+    const avgPower = POWER.reduce((a,b) => a+b, 0) / 12;
+    const b = bills.reduce((s,x) => s + (x.seasonal ? avgPower : x.amt), 0);
+    const a = annual.reduce((s,x) => s + x.amt, 0) / 12;
     return b + a;
   }, [bills, annual]);
   const sixMonth = monthlyBurn * 6;
@@ -798,1745 +675,517 @@ function App() {
      against CONFIRMED income. Projected listings never create headroom. */
   const coverage = React.useMemo(() => {
     const nextIn = events.find(e => e.amt > 0 && !e.projected);
-    const wall = nextIn ? nextIn.date : new Date(today.getTime() + horizon * 86400000);
-    const committed = events.filter(e => e.amt < 0 && e.date <= wall).reduce((t, e) => t + Math.abs(e.amt), 0);
-    const days = Math.round((wall - today) / 86400000);
-    const gap = committed - openingBal;
-    const covered = monthlyBurn > 0 ? Math.floor(openingBal / monthlyBurn * 30.4) : 0;
-    return {
-      committed,
-      days,
-      gap,
-      covered,
-      wall,
-      confirmed: !!nextIn
-    };
-  }, [events, openingBal, monthlyBurn, horizon]);
-  const [savTarget, setSavTarget] = useSaved("savTarget", 30000);
+    const wall = nextIn ? nextIn.date : new Date(today.getTime() + horizon*86400000);
+    const committed = events.filter(e => e.amt < 0 && e.date <= wall)
+      .reduce((t,e) => t + Math.abs(e.amt), 0);
+    return { committed, days: Math.round((wall - today)/86400000),
+      gap: committed - openingBal,
+      covered: monthlyBurn > 0 ? Math.floor(openingBal/monthlyBurn*30.4) : 0,
+      wall, confirmed: !!nextIn };
+  }, [events, openingBal, monthlyBurn, horizon, today]);
+
   const minBal = events.length ? Math.min(...events.map(e => e.bal)) : openingBal;
-  const endBal = events.length ? events[events.length - 1].bal : openingBal;
-  const totalIn = events.filter(e => e.amt > 0).reduce((s, e) => s + e.amt, 0);
-  const totalOut = events.filter(e => e.amt < 0).reduce((s, e) => s + e.amt, 0);
-  const firstNeg = events.find(e => e.bal < 0);
+  const endBal = events.length ? events[events.length-1].bal : openingBal;
+  const totalIn = events.filter(e => e.amt > 0).reduce((s,e) => s+e.amt, 0);
+  const totalOut = events.filter(e => e.amt < 0).reduce((s,e) => s+e.amt, 0);
+
   const alert = React.useMemo(() => {
     const neg = events.find(e => e.bal < 0);
     if (!neg) return null;
-    const days = Math.round((neg.date - today) / 86400000);
-    const worst = Math.min(...events.filter(e => e.date <= new Date(neg.date.getTime() + 60 * 86400000)).map(e => e.bal));
-    return {
-      date: neg.date,
-      days,
-      worst,
-      need: Math.abs(worst) / (houseSplit / 100)
-    };
-  }, [events, houseSplit]);
+    const worst = Math.min(...events.filter(e => e.date <= new Date(neg.date.getTime()+60*86400000)).map(e => e.bal));
+    return { date:neg.date, days:Math.round((neg.date-today)/86400000), worst,
+      need: Math.abs(worst)/(houseSplit/100) };
+  }, [events, houseSplit, today]);
+
   const bizPL = React.useMemo(() => {
-    const grossAll = pipeline.filter(counts).reduce((t, d) => t + grossOf(d), 0);
-    const monthsSpan = horizon / 30.4;
-    const revMo = grossAll * (1 - houseSplit / 100) / monthsSpan;
-    const costMo = biz.reduce((t, x) => t + x.amt, 0);
-    return {
-      revMo,
-      costMo,
-      marginMo: revMo - costMo,
-      pct: revMo ? (revMo - costMo) / revMo * 100 : 0
-    };
+    const grossAll = pipeline.filter(counts).reduce((t,d) => t + grossOf(d), 0);
+    const revMo = grossAll * (1 - houseSplit/100) / (horizon/30.4);
+    const costMo = biz.reduce((t,x) => t + x.amt, 0);
+    return { revMo, costMo, marginMo: revMo-costMo, pct: revMo ? (revMo-costMo)/revMo*100 : 0 };
   }, [pipeline, houseSplit, biz, horizon]);
-  const goal = React.useMemo(() => {
-    const closed = pipeline.filter(d => counts(d) && d.close).reduce((t, d) => t + grossOf(d), 0);
-    const projected = pipeline.filter(d => counts(d) && !d.close).reduce((t, d) => t + grossOf(d), 0);
-    return {
-      closed,
-      projected
-    };
-  }, [pipeline]);
+
+  const goal = React.useMemo(() => ({
+    closed: pipeline.filter(d => counts(d) && d.close).reduce((t,d) => t + grossOf(d), 0),
+    projected: pipeline.filter(d => counts(d) && !d.close).reduce((t,d) => t + grossOf(d), 0)
+  }), [pipeline]);
+
   const gates = React.useMemo(() => {
-    const arrearsTot = arrears.reduce((t, r) => t + r.amt, 0);
+    const arrearsTot = arrears.reduce((t,r) => t + r.amt, 0);
     const reserve = monthlyBurn * reserveMonths;
     const loanStep = (loanRunRate - 600) * 12;
     const yearBurn = monthlyBurn * 12;
     const need = yearBurn + loanStep + reserve + arrearsTot;
-    return {
-      arrearsTot,
-      reserve,
-      loanStep,
-      yearBurn,
-      need,
-      gross: need / (houseSplit / 100),
-      volume: need / (houseSplit / 100) / 0.03
-    };
+    return { arrearsTot, reserve, loanStep, yearBurn, need,
+      gross: need/(houseSplit/100), volume: need/(houseSplit/100)/0.03 };
   }, [arrears, monthlyBurn, reserveMonths, loanRunRate, houseSplit]);
+
   const signBy = React.useMemo(() => {
-    const d = new Date(today);
-    d.setDate(d.getDate() + Math.max(0, 150 - dom)); // must sign this many days out to still close inside ~150d
-    return d;
-  }, [dom]);
+    const d = new Date(today); d.setDate(d.getDate() + Math.max(0, 150 - dom)); return d;
+  }, [dom, today]);
+
+  // A draw whose deal is gone or not counting never gets repaid in the ledger,
+  // so it stays visible as an outstanding debt rather than silently vanishing.
+  const drawTotal = draws.reduce((t, w) => t + (w.amt || 0), 0);
+  const drawsUnscheduled = draws.filter(w => {
+    const d = pipeline.find(x => String(x.id) === String(w.dealId));
+    return !d || !counts(d);
+  });
+
   const undatedList = pipeline.filter(d => !d.close && d.side === "Listing" && counts(d));
   const excluded = pipeline.filter(d => !counts(d));
 
-  /* loan */
   const loan = React.useMemo(() => {
-    const rate = 0.0775 / 12;
-    let b = loanBal,
-      months = 0,
-      parentInt = 0;
-    while (b > 0 && months < 1200) {
-      parentInt += b * rate;
-      b -= loanPay;
-      months++;
-    }
-    return {
-      months,
-      parentInt,
-      daily: loanBal * 0.0775 / 365
-    };
+    const rate = 0.0775/12;
+    let b = loanBal, months = 0, parentInt = 0;
+    while (b > 0 && months < 1200) { parentInt += b*rate; b -= loanPay; months++; }
+    return { months, parentInt, daily: loanBal*0.0775/365 };
   }, [loanBal, loanPay]);
-  const upd = (setter, arr) => (id, k, v) => setter(arr.map(x => x.id === id ? {
-    ...x,
-    [k]: v
-  } : x));
-  return /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.ground,
-      minHeight: "100vh",
-      color: C.paper,
-      fontFamily: BODY,
-      padding: "16px 14px 60px"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      maxWidth: 860,
-      margin: "0 auto"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      borderBottom: `1px solid ${C.line}`,
-      paddingBottom: 14,
-      marginBottom: 18
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      letterSpacing: 2,
-      color: C.brass,
-      textTransform: "uppercase"
-    }
-  }, "Steel Household"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: DISP,
-      fontSize: 30,
-      fontWeight: 500,
-      letterSpacing: -0.3,
-      lineHeight: 1.1,
-      marginTop: 4
-    }
-  }, "Cash Calendar"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12,
-      color: C.dim,
-      marginTop: 5
-    }
-  }, "Pipeline closings + ", lagDays, "-day wire lag · ", houseSplit, "% to house · bills on due date")), safeBuffer && /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: coverage.gap > 0 ? "rgba(196,85,61,0.13)" : C.panel,
-      border: `1px solid ${coverage.gap > 0 ? C.signal : C.line}`,
-      padding: "15px 15px",
-      marginBottom: 14
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      letterSpacing: 1.5,
-      color: C.dim,
-      textTransform: "uppercase"
-    }
-  }, "Committed before the next confirmed wire"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 34,
-      fontWeight: 700,
-      letterSpacing: -0.8,
-      marginTop: 4,
-      color: C.paper
-    }
-  }, usd(coverage.committed)), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12,
-      color: C.dim,
-      marginTop: 4
-    }
-  }, usd(openingBal), " on hand · next confirmed wire in ", coverage.days, " days"), coverage.gap > 0 && /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginTop: 11,
-      paddingTop: 10,
-      borderTop: `1px solid rgba(196,85,61,0.35)`
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 9.5,
-      letterSpacing: 1.1,
-      color: C.signal,
-      textTransform: "uppercase"
-    }
-  }, "Unfunded"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 23,
-      fontWeight: 700,
-      color: C.signal,
-      marginTop: 3
-    }
-  }, usd(coverage.gap)))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "grid",
-      gridTemplateColumns: "repeat(auto-fit,minmax(120px,1fr))",
-      gap: 8,
-      marginBottom: 16
-    }
-  }, [{
-    l: "Opening",
-    v: usd(openingBal),
-    c: C.paper
-  }, {
-    l: "Income in",
-    v: usd(totalIn),
-    c: C.green
-  }, {
-    l: "Bills out",
-    v: usd(totalOut),
-    c: C.signal
-  }, {
-    l: "Low point",
-    v: usd(minBal),
-    c: minBal < 0 ? C.signal : C.brass
-  }, {
-    l: `Day ${horizon}`,
-    v: usd(endBal),
-    c: endBal < 0 ? C.signal : C.paper
-  }, {
-    l: "Months covered",
-    v: (endBal / monthlyBurn).toFixed(1),
-    c: endBal / monthlyBurn < 6 ? C.signal : C.green
-  }].map(s => /*#__PURE__*/React.createElement("div", {
-    key: s.l,
-    style: {
-      background: C.panel,
-      border: `1px solid ${C.line}`,
-      padding: "10px 11px"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 9,
-      letterSpacing: 1.2,
-      color: C.dim,
-      textTransform: "uppercase"
-    }
-  }, s.l), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 17,
-      fontWeight: 600,
-      color: s.c,
-      marginTop: 3
-    }
-  }, s.v)))), alert && /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: "rgba(196,85,61,0.13)",
-      border: `1px solid ${C.signal}`,
-      padding: "13px 14px",
-      marginBottom: 16
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "baseline",
-      gap: 10
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      letterSpacing: 1.4,
-      color: C.signal,
-      textTransform: "uppercase"
-    }
-  }, alert.days <= warnDays ? "Act now" : "Shortfall ahead"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 22,
-      fontWeight: 700,
-      color: C.signal
-    }
-  }, alert.days, "d")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 13.5,
-      marginTop: 5,
-      lineHeight: 1.5
-    }
-  }, "Cash runs out ", alert.date.toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric"
-  }), ". Deepest point ", usd(alert.worst), "."), /*#__PURE__*/React.createElement("div", {
-    style: {
-      borderTop: `1px solid rgba(196,85,61,0.35)`,
-      marginTop: 10,
-      paddingTop: 9
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 9.5,
-      letterSpacing: 1.1,
-      color: C.dim,
-      textTransform: "uppercase"
-    }
-  }, "Gross commission needed to close the gap"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 25,
-      fontWeight: 700,
-      color: C.brass,
-      marginTop: 3
-    }
-  }, usd(alert.need)), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      color: C.dim,
-      marginTop: 2
-    }
-  }, "≈ ", usd(alert.need / 0.03), " in volume at 3% · must wire before ", alert.date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric"
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      marginTop: 10,
-      paddingTop: 9,
-      borderTop: `1px solid rgba(196,85,61,0.35)`
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 9.5,
-      letterSpacing: 1.1,
-      color: C.dim,
-      textTransform: "uppercase"
-    }
-  }, "Sign a listing by"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 20,
-      fontWeight: 700,
-      color: C.paper,
-      marginTop: 3
-    }
-  }, signBy.toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric"
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      color: C.dim,
-      marginTop: 2
-    }
-  }, "at ", dom, " days to close, anything signed later misses this cycle")))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.panel,
-      border: `1px solid ${C.line}`,
-      padding: "14px 8px 6px",
-      marginBottom: 18
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      letterSpacing: 1.4,
-      color: C.dim,
-      textTransform: "uppercase",
-      padding: "0 8px 10px"
-    }
-  }, "Running balance"), /*#__PURE__*/React.createElement(Spark, {
-    data: chartData,
-    target: savTarget
-  })), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      gap: 0,
-      borderBottom: `1px solid ${C.line}`,
-      marginBottom: 14,
-      flexWrap: "wrap"
-    }
-  }, [["calendar", "Calendar"], ["savings", "Savings"], ["deploy", "Deploy"], ["biz", "Business"], ["risk", "Unknowns"], ["pipeline", "Pipeline"], ["bills", "Bills"], ["loan", "Family loan"], ["settings", "Settings"]].map(([k, l]) => /*#__PURE__*/React.createElement("button", {
-    key: k,
-    onClick: () => setTab(k),
-    style: {
-      background: "transparent",
-      border: "none",
-      borderBottom: `2px solid ${tab === k ? C.brass : "transparent"}`,
-      color: tab === k ? C.paper : C.dim,
-      fontFamily: MONO,
-      fontSize: 11,
-      letterSpacing: 1.2,
-      textTransform: "uppercase",
-      padding: "9px 13px",
-      cursor: "pointer"
-    }
-  }, l))), tab === "calendar" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.panel,
-      border: `1px solid ${slip > 0 ? C.signal : C.line}`,
-      padding: "14px 15px",
-      marginBottom: 16
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "baseline"
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      letterSpacing: 1.4,
-      color: slip > 0 ? C.signal : C.dim,
-      textTransform: "uppercase"
-    }
-  }, "Slip test — listings close late"), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 17,
-      fontWeight: 700,
-      color: slip > 0 ? C.signal : C.brass
-    }
-  }, "+", slip, "d")), /*#__PURE__*/React.createElement("input", {
-    type: "range",
-    min: "0",
-    max: "90",
-    step: "15",
-    value: slip,
-    onChange: e => setSlip(parseInt(e.target.value)),
-    style: {
-      width: "100%",
-      accentColor: slip > 0 ? C.signal : C.brass,
-      marginTop: 9
-    }
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      fontFamily: MONO,
-      fontSize: 9,
-      color: C.dim,
-      marginTop: 2
-    }
-  }, [0, 15, 30, 45, 60, 75, 90].map(n => /*#__PURE__*/React.createElement("span", {
-    key: n
-  }, n))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12,
-      color: C.dim,
-      marginTop: 9,
-      lineHeight: 1.55
-    }
-  }, "Every projected listing pushes back together. Watch the low point and the day-", horizon, " balance move.")), events.map((e, i) => {
-    const prev = i > 0 ? events[i - 1].date : null;
-    const newMonth = !prev || prev.getMonth() !== e.date.getMonth();
-    return /*#__PURE__*/React.createElement("div", {
-      key: i
-    }, newMonth && /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: DISP,
-        fontSize: 15,
-        letterSpacing: 1.5,
-        color: C.brass,
-        textTransform: "uppercase",
-        padding: "16px 0 7px",
-        borderBottom: `1px solid ${C.line}`,
-        marginBottom: 6
-      }
-    }, e.date.toLocaleDateString("en-US", {
-      month: "long",
-      year: "numeric"
-    })), /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        alignItems: "center",
-        gap: 10,
-        padding: "7px 0",
-        borderBottom: `1px solid rgba(44,64,59,0.4)`
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: MONO,
-        fontSize: 10,
-        color: C.dim,
-        width: 30,
-        flexShrink: 0,
-        textAlign: "right"
-      }
-    }, e.date.getDate()), /*#__PURE__*/React.createElement("div", {
-      style: {
-        width: 3,
-        height: 26,
-        background: e.color,
-        flexShrink: 0
-      }
-    }), /*#__PURE__*/React.createElement("div", {
-      style: {
-        flex: 1,
-        minWidth: 0
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 13,
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        textOverflow: "ellipsis"
-      }
-    }, e.label), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: MONO,
-        fontSize: 9.5,
-        color: C.dim,
-        letterSpacing: 0.4
-      }
-    }, e.sub)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        textAlign: "right",
-        flexShrink: 0
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: MONO,
-        fontSize: 13,
-        fontWeight: 600,
-        color: e.amt > 0 ? C.green : C.paper
-      }
-    }, e.amt > 0 ? "+" : "", usd(e.amt)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: MONO,
-        fontSize: 9.5,
-        color: e.bal < 0 ? C.signal : C.dim
-      }
-    }, usd(e.bal)))));
-  })), tab === "pipeline" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: "rgba(192,143,74,0.1)",
-      border: `1px solid ${C.brass}`,
-      padding: "11px 13px",
-      marginBottom: 14
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      letterSpacing: 1.4,
-      color: C.brass,
-      textTransform: "uppercase"
-    }
-  }, "Undated deals"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12.5,
-      color: C.dim,
-      marginTop: 4,
-      lineHeight: 1.55
-    }
-  }, undatedList.length, " signed listings projected at ", dom, " days out. ", excluded.length, " deals excluded: seller consultations, and buyer deals not under contract.")), pipeline.map(d => {
-    const gross = grossOf(d);
-    const net = netOf(d, houseSplit);
-    const pd = new Date(today);
-    pd.setDate(pd.getDate() + dom);
-    const projDate = pd.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric"
-    });
-    const counted = counts(d);
-    return /*#__PURE__*/React.createElement("div", {
-      key: d.id,
-      style: {
-        background: C.panel,
-        border: `1px solid ${C.line}`,
-        padding: "11px 12px",
-        marginBottom: 7,
-        opacity: counted ? 1 : 0.45
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        justifyContent: "space-between",
-        gap: 10,
-        alignItems: "flex-start"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        minWidth: 0
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 13.5,
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        textOverflow: "ellipsis"
-      }
-    }, d.name), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: MONO,
-        fontSize: 9.5,
-        color: C.dim,
-        marginTop: 2,
-        letterSpacing: 0.4
-      }
-    }, d.side, " · ", d.stage, " · ", usd(d.value)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: MONO,
-        fontSize: 9.5,
-        marginTop: 2,
-        letterSpacing: 0.4,
-        color: !counted ? C.signal : d.close ? C.green : C.brass
-      }
-    }, !counted ? whyOut(d) : d.close ? "scheduled" : `projected ${projDate}`)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        textAlign: "right",
-        flexShrink: 0
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: MONO,
-        fontSize: 14,
-        fontWeight: 600,
-        color: counted ? C.green : C.dim
-      }
-    }, counted ? usd(net) : "—"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: MONO,
-        fontSize: 9.5,
-        color: C.dim
-      }
-    }, d.net != null ? "net override" : `gross ${usd(gross)}${d.flat != null ? " flat" : ""}`))), /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        gap: 8,
-        marginTop: 9,
-        alignItems: "flex-end"
-      }
-    }, /*#__PURE__*/React.createElement("label", {
-      style: {
-        flex: 1
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: MONO,
-        fontSize: 9,
-        color: C.dim,
-        letterSpacing: 1,
-        textTransform: "uppercase",
-        marginBottom: 3
-      }
-    }, "Close date"), /*#__PURE__*/React.createElement("input", {
-      type: "date",
-      value: d.close,
-      onChange: ev => upd(setPipeline, pipeline)(d.id, "close", ev.target.value),
-      style: inp
-    })), /*#__PURE__*/React.createElement("label", {
-      style: {
-        width: d.flat != null ? 96 : 78
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: MONO,
-        fontSize: 9,
-        color: C.dim,
-        letterSpacing: 1,
-        textTransform: "uppercase",
-        marginBottom: 3
-      }
-    }, d.flat != null ? "Flat $" : "Comm %"), /*#__PURE__*/React.createElement("input", {
-      type: "number",
-      step: d.flat != null ? 500 : 0.1,
-      value: d.flat != null ? d.flat : d.rate,
-      onChange: ev => upd(setPipeline, pipeline)(d.id, d.flat != null ? "flat" : "rate", parseFloat(ev.target.value) || 0),
-      style: inp
-    })), /*#__PURE__*/React.createElement("button", {
-      onClick: () => setPipeline(pipeline.filter(x => x.id !== d.id)),
-      title: "Remove deal",
-      style: {
-        background: "transparent",
-        border: `1px solid ${C.line}`,
-        color: C.dim,
-        fontFamily: MONO,
-        fontSize: 15,
-        lineHeight: 1,
-        padding: "6px 10px",
-        cursor: "pointer"
-      }
-    }, "×")));
-  })), tab === "savings" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.panel,
-      border: `1px solid ${C.line}`,
-      padding: "16px 15px",
-      marginBottom: 12
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      letterSpacing: 1.5,
-      color: C.dim,
-      textTransform: "uppercase"
-    }
-  }, "True monthly burn"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 34,
-      fontWeight: 700,
-      color: C.paper,
-      marginTop: 4,
-      letterSpacing: -0.5
-    }
-  }, usd(monthlyBurn)), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12,
-      color: C.dim,
-      marginTop: 3
-    }
-  }, "every bill + power averaged + Christmas and vacation spread monthly")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.panel,
-      border: `1px solid ${C.signal}`,
-      padding: "15px 15px",
-      marginBottom: 12
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      letterSpacing: 1.4,
-      color: C.signal,
-      textTransform: "uppercase"
-    }
-  }, "Past due right now"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 28,
-      fontWeight: 700,
-      color: C.signal,
-      marginTop: 4
-    }
-  }, usd(arrears.reduce((t, r) => t + r.amt, 0))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12,
-      color: C.dim,
-      marginTop: 3
-    }
-  }, "clears before any savings can start")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.panel,
-      border: `1px solid ${C.signal}`,
-      padding: "15px 15px",
-      marginBottom: 12
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      letterSpacing: 1.4,
-      color: C.signal,
-      textTransform: "uppercase"
-    }
-  }, "Your $30,000 target is short"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      gap: 8,
-      marginTop: 11
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.panel2,
-      padding: "10px 11px"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 9,
-      color: C.dim,
-      letterSpacing: 1,
-      textTransform: "uppercase"
-    }
-  }, "$30,000 buys"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 21,
-      fontWeight: 600,
-      color: C.signal,
-      marginTop: 3
-    }
-  }, (30000 / monthlyBurn).toFixed(1), " mo")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.panel2,
-      padding: "10px 11px"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 9,
-      color: C.dim,
-      letterSpacing: 1,
-      textTransform: "uppercase"
-    }
-  }, "Six months costs"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 21,
-      fontWeight: 600,
-      color: C.green,
-      marginTop: 3
-    }
-  }, usd(sixMonth))))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.panel,
-      border: `1px solid ${C.line}`,
-      padding: "15px 15px"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      marginBottom: 6
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      letterSpacing: 1.2,
-      color: C.dim,
-      textTransform: "uppercase"
-    }
-  }, "Savings target"), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 14,
-      fontWeight: 600,
-      color: C.brass
-    }
-  }, usd(savTarget))), /*#__PURE__*/React.createElement("input", {
-    type: "range",
-    min: "0",
-    max: "90000",
-    step: "1000",
-    value: savTarget,
-    onChange: e => setSavTarget(parseInt(e.target.value)),
-    style: {
-      width: "100%",
-      accentColor: C.brass
-    }
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 11,
-      color: C.dim,
-      marginTop: 5
-    }
-  }, (savTarget / monthlyBurn).toFixed(1), " months of runway"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      borderTop: `1px solid ${C.line}`,
-      marginTop: 13,
-      paddingTop: 11
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 9.5,
-      letterSpacing: 1.1,
-      color: C.dim,
-      textTransform: "uppercase",
-      marginBottom: 6
-    }
-  }, "Sinking funds"), annual.map(a => /*#__PURE__*/React.createElement("div", {
-    key: a.id,
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      padding: "5px 0",
-      fontSize: 12.5
-    }
-  }, /*#__PURE__*/React.createElement("span", null, a.name), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: MONO,
-      color: C.dim
-    }
-  }, usd(a.amt), "/yr · ", usd(a.amt / 12), "/mo")))))), tab === "deploy" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.panel,
-      border: `1px solid ${C.line}`,
-      padding: "15px 15px",
-      marginBottom: 12
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      letterSpacing: 1.5,
-      color: C.brass,
-      textTransform: "uppercase",
-      marginBottom: 11
-    }
-  }, "Order of operations"), [["1", "Clear past due", gates.arrearsTot, "nothing starts until this is zero"], ["2", "One month buffer", monthlyBurn, "stops the overdraft cycle"], ["3", `Family loan to ${usd(loanRunRate)}/mo`, gates.loanStep, "stops your parents' balance from growing"], ["4", `${reserveMonths} months reserve`, gates.reserve, "the gate you asked for"], ["5", "Deploy surplus", null, "business and index funds"]].map(([n, label, amt, note]) => /*#__PURE__*/React.createElement("div", {
-    key: n,
-    style: {
-      display: "flex",
-      gap: 11,
-      padding: "9px 0",
-      borderTop: n === "1" ? "none" : `1px solid ${C.line}`
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 15,
-      color: C.brass,
-      width: 16,
-      flexShrink: 0
-    }
-  }, n), /*#__PURE__*/React.createElement("div", {
-    style: {
-      flex: 1,
-      minWidth: 0
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 13
-    }
-  }, label), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 9.5,
-      color: C.dim,
-      marginTop: 2
-    }
-  }, note)), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 13,
-      fontWeight: 600,
-      color: amt ? C.paper : C.green,
-      flexShrink: 0
-    }
-  }, amt ? usd(amt) : "→")))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.panel,
-      border: `1px solid ${C.brass}`,
-      padding: "16px 15px",
-      marginBottom: 12
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      letterSpacing: 1.4,
-      color: C.brass,
-      textTransform: "uppercase"
-    }
-  }, "To clear every gate in 12 months"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 34,
-      fontWeight: 700,
-      color: C.brass,
-      marginTop: 5,
-      letterSpacing: -0.5
-    }
-  }, usd(gates.gross)), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12,
-      color: C.dim,
-      marginTop: 3
-    }
-  }, "gross commission · ", usd(gates.need), " to the house at ", houseSplit, "%"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 11,
-      color: C.dim,
-      marginTop: 7,
-      paddingTop: 9,
-      borderTop: `1px solid ${C.line}`
-    }
-  }, "≈ ", usd(gates.volume), " in volume at 3%", /*#__PURE__*/React.createElement("br", null), "≈ ", Math.ceil(gates.volume / 700000), " closings at $700k average"), (() => {
-    const booked = goal.closed + goal.projected;
-    const pct = Math.min(100, booked / gates.gross * 100);
-    const pctHard = Math.min(100, goal.closed / gates.gross * 100);
-    const gap = Math.max(0, gates.gross - booked);
-    return /*#__PURE__*/React.createElement("div", {
-      style: {
-        marginTop: 14,
-        paddingTop: 12,
-        borderTop: `1px solid ${C.line}`
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "baseline"
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: MONO,
-        fontSize: 9.5,
-        letterSpacing: 1.2,
-        color: C.dim,
-        textTransform: "uppercase"
-      }
-    }, "Gap to goal"), /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontFamily: MONO,
-        fontSize: 26,
-        fontWeight: 700,
-        color: pct >= 100 ? C.green : C.signal
-      }
-    }, pct.toFixed(1), "%")), /*#__PURE__*/React.createElement("div", {
-      style: {
-        position: "relative",
-        height: 12,
-        background: C.ground,
-        marginTop: 9,
-        border: `1px solid ${C.line}`
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        position: "absolute",
-        inset: 0,
-        width: `${pct}%`,
-        background: C.brass,
-        opacity: 0.4
-      }
-    }), /*#__PURE__*/React.createElement("div", {
-      style: {
-        position: "absolute",
-        inset: 0,
-        width: `${pctHard}%`,
-        background: C.green
-      }
-    })), /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        justifyContent: "space-between",
-        fontFamily: MONO,
-        fontSize: 9,
-        color: C.dim,
-        marginTop: 4
-      }
-    }, /*#__PURE__*/React.createElement("span", null, "■ scheduled ", usd(goal.closed)), /*#__PURE__*/React.createElement("span", null, "□ projected ", usd(goal.projected))), /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: 8,
-        marginTop: 12
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        background: C.panel2,
-        padding: "10px 11px"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: MONO,
-        fontSize: 9,
-        color: C.dim,
-        letterSpacing: 1,
-        textTransform: "uppercase"
-      }
-    }, "Still needed"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: MONO,
-        fontSize: 19,
-        fontWeight: 700,
-        color: C.signal,
-        marginTop: 3
-      }
-    }, usd(gap)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: MONO,
-        fontSize: 9.5,
-        color: C.dim
-      }
-    }, "gross commission")), /*#__PURE__*/React.createElement("div", {
-      style: {
-        background: C.panel2,
-        padding: "10px 11px"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: MONO,
-        fontSize: 9,
-        color: C.dim,
-        letterSpacing: 1,
-        textTransform: "uppercase"
-      }
-    }, "Per month"), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: MONO,
-        fontSize: 19,
-        fontWeight: 700,
-        color: C.brass,
-        marginTop: 3
-      }
-    }, usd(gap / 12)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: MONO,
-        fontSize: 9.5,
-        color: C.dim
-      }
-    }, (gap / 12 / (700000 * 0.03)).toFixed(1), " closings/mo"))));
-  })()), /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.panel,
-      border: `1px solid ${C.line}`,
-      padding: "15px 15px"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      letterSpacing: 1.4,
-      color: C.dim,
-      textTransform: "uppercase",
-      marginBottom: 12
-    }
-  }, "Surplus split, once gate 4 is funded"), [["Business — lead gen, hires", splitBiz, setSplitBiz, C.brass], ["S&P 500 index", splitIdx, setSplitIdx, C.green]].map(([l, v, set, col]) => /*#__PURE__*/React.createElement("div", {
-    key: l,
-    style: {
-      marginBottom: 15
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      marginBottom: 5
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 12.5
-    }
-  }, l), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 13,
-      fontWeight: 600,
-      color: col
-    }
-  }, v, "%")), /*#__PURE__*/React.createElement("input", {
-    type: "range",
-    min: "0",
-    max: "100",
-    step: "5",
-    value: v,
-    onChange: e => set(parseInt(e.target.value)),
-    style: {
-      width: "100%",
-      accentColor: col
-    }
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      paddingTop: 10,
-      borderTop: `1px solid ${C.line}`
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 12.5,
-      color: C.signal
-    }
-  }, "Accelerate family loan"), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 13,
-      fontWeight: 600,
-      color: C.signal
-    }
-  }, Math.max(0, 100 - splitBiz - splitIdx), "%")), splitBiz + splitIdx > 100 && /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      color: C.signal,
-      marginTop: 7
-    }
-  }, "Over 100% — pull one back")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.panel2,
-      border: `1px solid ${C.line}`,
-      padding: "13px 14px",
-      marginTop: 12
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 9.5,
-      letterSpacing: 1.1,
-      color: C.dim,
-      textTransform: "uppercase",
-      marginBottom: 6
-    }
-  }, "Why index funds sit third"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12.5,
-      color: C.dim,
-      lineHeight: 1.6
-    }
-  }, "The S&P has returned about 10% a year long term. Your parents are paying 7.75% on ", usd(loanBal), ". Buying index funds while that runs is a two point spread — with their money at risk, not yours."))), tab === "biz" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.panel,
-      border: `1px solid ${bizPL.marginMo < 0 ? C.signal : C.green}`,
-      padding: "16px 15px",
-      marginBottom: 12
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      letterSpacing: 1.5,
-      color: C.dim,
-      textTransform: "uppercase"
-    }
-  }, "Business margin, monthly"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 34,
-      fontWeight: 700,
-      letterSpacing: -0.6,
-      marginTop: 4,
-      color: bizPL.marginMo < 0 ? C.signal : C.green
-    }
-  }, usd(bizPL.marginMo)), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12,
-      color: C.dim,
-      marginTop: 4
-    }
-  }, usd(bizPL.revMo), "/mo in · ", usd(bizPL.costMo), "/mo out · ", bizPL.pct.toFixed(0), "% margin"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10.5,
-      color: C.dim,
-      marginTop: 9,
-      paddingTop: 9,
-      borderTop: `1px solid ${C.line}`,
-      lineHeight: 1.6
-    }
-  }, "Revenue = the ", 100 - houseSplit, "% that stays in the company, from counted pipeline spread over ", horizon, " days.", bizPL.marginMo < 0 && " Negative margin means Deploy gate 5 should not send money here.")), biz.map(x => /*#__PURE__*/React.createElement("div", {
-    key: x.id,
-    style: {
-      display: "flex",
-      alignItems: "center",
-      gap: 10,
-      background: C.panel,
-      border: `1px solid ${C.line}`,
-      padding: "9px 11px",
-      marginBottom: 6
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: 3,
-      height: 26,
-      background: C.brass,
-      flexShrink: 0
-    }
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      flex: 1,
-      fontSize: 13
-    }
-  }, x.name), /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    value: x.amt,
-    step: "50",
-    onChange: e => setBiz(biz.map(b => b.id === x.id ? {
-      ...b,
-      amt: parseFloat(e.target.value) || 0
-    } : b)),
-    style: {
-      ...inp,
-      width: 92
-    }
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10.5,
-      color: C.dim,
-      marginTop: 12,
-      lineHeight: 1.6
-    }
-  }, "Placeholders. Replace with real numbers — this is the half of your money the household model never sees.")), tab === "risk" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.panel,
-      border: `1px solid ${C.brass}`,
-      padding: "14px 15px",
-      marginBottom: 12
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      letterSpacing: 1.4,
-      color: C.brass,
-      textTransform: "uppercase"
-    }
-  }, "Known unknowns"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12.5,
-      color: C.dim,
-      marginTop: 5,
-      lineHeight: 1.55
-    }
-  }, "Real obligations with no date or amount attached. They sit outside every projection on this dashboard.")), liabs.map(x => /*#__PURE__*/React.createElement("div", {
-    key: x.id,
-    style: {
-      background: C.panel,
-      border: `1px solid ${C.line}`,
-      padding: "12px 13px",
-      marginBottom: 7
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      gap: 10
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      minWidth: 0
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 13.5
-    }
-  }, x.name), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 9.5,
-      color: C.dim,
-      marginTop: 2
-    }
-  }, x.note)), /*#__PURE__*/React.createElement("div", {
-    style: {
-      textAlign: "right",
-      flexShrink: 0
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 14,
-      fontWeight: 600,
-      color: x.amt ? C.signal : C.brass
-    }
-  }, x.amt ? usd(x.amt) : "?"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 9,
-      color: C.dim
-    }
-  }, x.when))), /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    value: x.amt,
-    step: "500",
-    placeholder: "amount",
-    onChange: e => setLiabs(liabs.map(l => l.id === x.id ? {
-      ...l,
-      amt: parseFloat(e.target.value) || 0
-    } : l)),
-    style: {
-      ...inp,
-      marginTop: 9
-    }
-  })))), tab === "bills" && /*#__PURE__*/React.createElement("div", null, bills.map(b => /*#__PURE__*/React.createElement("div", {
-    key: b.id,
-    style: {
-      display: "flex",
-      alignItems: "center",
-      gap: 9,
-      background: C.panel,
-      border: `1px solid ${C.line}`,
-      padding: "9px 11px",
-      marginBottom: 6
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      width: 3,
-      height: 30,
-      background: KIND_COLOR[b.kind],
-      flexShrink: 0
-    }
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      flex: 1,
-      minWidth: 0
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 13
-    }
-  }, b.name), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 9.5,
-      color: C.dim,
-      letterSpacing: 0.4
-    }
-  }, b.kind, b.seasonal ? " · seasonal" : "")), /*#__PURE__*/React.createElement("label", {
-    style: {
-      width: 52
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 8.5,
-      color: C.dim,
-      letterSpacing: 0.8,
-      textTransform: "uppercase"
-    }
-  }, "Day"), /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    value: b.day,
-    min: "1",
-    max: "28",
-    onChange: e => upd(setBills, bills)(b.id, "day", parseInt(e.target.value) || 1),
-    style: inp
-  })), /*#__PURE__*/React.createElement("label", {
-    style: {
-      width: 86
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 8.5,
-      color: C.dim,
-      letterSpacing: 0.8,
-      textTransform: "uppercase"
-    }
-  }, "Amount"), /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    value: b.seasonal ? POWER[today.getMonth()] : b.amt,
-    disabled: b.seasonal,
-    onChange: e => upd(setBills, bills)(b.id, "amt", parseFloat(e.target.value) || 0),
-    style: {
-      ...inp,
-      opacity: b.seasonal ? 0.5 : 1
-    }
-  }))))), tab === "loan" && /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.panel,
-      border: `1px solid ${C.signal}`,
-      padding: "18px 16px",
-      marginBottom: 12,
-      textAlign: "center"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      letterSpacing: 1.6,
-      color: C.signal,
-      textTransform: "uppercase"
-    }
-  }, "Interest your parents pay · per day"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 42,
-      fontWeight: 700,
-      color: C.signal,
-      letterSpacing: -1,
-      marginTop: 6
-    }
-  }, usd(loan.daily)), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12,
-      color: C.dim,
-      marginTop: 4
-    }
-  }, "7.75% (prime + 1) on ", usd(loanBal), " · you owe principal only")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.panel,
-      border: `1px solid ${C.line}`,
-      padding: "14px 14px"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      letterSpacing: 1.4,
-      color: C.dim,
-      textTransform: "uppercase",
-      marginBottom: 10
-    }
-  }, "Your monthly payment"), /*#__PURE__*/React.createElement("input", {
-    type: "range",
-    min: "600",
-    max: "6000",
-    step: "100",
-    value: loanPay,
-    onChange: e => setLoanPay(parseInt(e.target.value)),
-    style: {
-      width: "100%",
-      accentColor: C.brass
-    }
-  }), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 28,
-      fontWeight: 700,
-      color: C.brass,
-      marginTop: 6
-    }
-  }, usd(loanPay), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 13,
-      color: C.dim,
-      fontWeight: 400
-    }
-  }, "/mo")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      gap: 8,
-      marginTop: 14
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.panel2,
-      padding: "10px 11px"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 9,
-      color: C.dim,
-      letterSpacing: 1,
-      textTransform: "uppercase"
-    }
-  }, "Payoff"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 19,
-      fontWeight: 600,
-      marginTop: 3
-    }
-  }, (loan.months / 12).toFixed(1), " yr"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      color: C.dim
-    }
-  }, "you're ", 41 + Math.round(loan.months / 12))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.panel2,
-      padding: "10px 11px"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 9,
-      color: C.dim,
-      letterSpacing: 1,
-      textTransform: "uppercase"
-    }
-  }, "Their interest"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 19,
-      fontWeight: 600,
-      color: C.signal,
-      marginTop: 3
-    }
-  }, usd(loan.parentInt)), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      color: C.dim
-    }
-  }, "total cost to them"))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 12,
-      color: C.dim,
-      marginTop: 12,
-      lineHeight: 1.55
-    }
-  }, "Balance is derived, not verified with your uncle. Confirm before trusting the payoff date."))), tab === "settings" && /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: C.panel,
-      border: `1px solid ${C.line}`,
-      padding: "14px 14px"
-    }
-  }, [["Opening balance", openingBal, setOpeningBal, 0, 50000, 500], ["House split %", houseSplit, setHouseSplit, 0, 100, 5], ["Wire lag (days)", lagDays, setLagDays, 0, 14, 1], ["Horizon (days)", horizon, setHorizon, 30, 365, 30], ["Listing days to close", dom, setDom, 30, 240, 5], ["Warning window (days)", warnDays, setWarnDays, 7, 120, 7], ["Reserve months", reserveMonths, setReserveMonths, 1, 12, 1], ["Family loan run rate", loanRunRate, setLoanRunRate, 600, 6000, 100], ["Loan balance", loanBal, setLoanBal, 0, 600000, 5000]].map(([l, v, set, mn, mx, st]) => /*#__PURE__*/React.createElement("div", {
-    key: l,
-    style: {
-      marginBottom: 18
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      justifyContent: "space-between",
-      marginBottom: 5
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      letterSpacing: 1.2,
-      color: C.dim,
-      textTransform: "uppercase"
-    }
-  }, l), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 13,
-      fontWeight: 600,
-      color: C.brass
-    }
-  }, l.includes("balance") ? usd(v) : v)), /*#__PURE__*/React.createElement("input", {
-    type: "range",
-    min: mn,
-    max: mx,
-    step: st,
-    value: v,
-    onChange: e => set(parseInt(e.target.value)),
-    style: {
-      width: "100%",
-      accentColor: C.brass
-    }
-  }))), /*#__PURE__*/React.createElement("label", {
-    style: {
-      display: "flex",
-      alignItems: "center",
-      gap: 9,
-      cursor: "pointer",
-      paddingTop: 6,
-      borderTop: `1px solid ${C.line}`
-    }
-  }, /*#__PURE__*/React.createElement("input", {
-    type: "checkbox",
-    checked: weighted,
-    onChange: e => setWeighted(e.target.checked),
-    style: {
-      width: 17,
-      height: 17,
-      accentColor: C.brass
-    }
-  }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 13
-    }
-  }, "Probability-weight income"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 9.5,
-      color: C.dim
-    }
-  }, "discount closings by stage odds")))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: MONO,
-      fontSize: 10,
-      color: C.dim,
-      textAlign: "center",
-      marginTop: 30,
-      lineHeight: 1.7,
-      letterSpacing: 0.4
-    }
-  }, "Pipeline seeded from SureSend · ", pipeline.length, " active deals", /*#__PURE__*/React.createElement("br", null), "Edits are session-only — not written back to SureSend")));
+
+  const card = (extra) => ({ background:C.panel, border:`1px solid ${C.line}`, ...extra });
+
+  return h("div", { style:{ background:C.ground, minHeight:"100vh", color:C.paper,
+      fontFamily:BODY, padding:"16px 14px 60px" } },
+    h("div", { style:{ maxWidth:860, margin:"0 auto" } },
+
+      /* header */
+      h("div", { style:{ borderBottom:`1px solid ${C.line}`, paddingBottom:14, marginBottom:18 } },
+        h("div", { style:{ fontFamily:MONO, fontSize:10, letterSpacing:2, color:C.brass, textTransform:"uppercase" } }, "Steel Household"),
+        h("div", { style:{ fontFamily:DISP, fontSize:30, fontWeight:500, letterSpacing:-0.3, lineHeight:1.1, marginTop:4 } }, "Cash Calendar"),
+        h("div", { style:{ fontSize:12, color:C.dim, marginTop:5 } },
+          "Pipeline closings + ", lagDays, "-day wire lag · ", houseSplit, "% to house · bills on due date")),
+
+      /* feed status */
+      h("div", { style:card({ padding:"10px 13px", marginBottom:14, display:"flex",
+          justifyContent:"space-between", alignItems:"center", gap:10,
+          borderColor: feedState.startsWith("err") ? C.signal : C.line }) },
+        h("div", null,
+          h("div", { style:{ ...cap, color: feedState.startsWith("err") ? C.signal : C.dim } }, "SureSend feed"),
+          h("div", { style:{ fontSize:12.5, marginTop:3, color: feedState.startsWith("err") ? C.signal : C.paper } },
+            feedState === "ok" ? `${livePipeline.length} live deals from CRM`
+            : feedState === "loading" ? "Loading…"
+            : `Failed — ${feedState.slice(4)}. Showing saved deals only.`)),
+        h("button", { onClick: loadFeed, style:{ background:"transparent", border:`1px solid ${C.line}`,
+            color:C.brass, fontFamily:MONO, fontSize:10, letterSpacing:1.2, textTransform:"uppercase",
+            padding:"7px 12px", cursor:"pointer", flexShrink:0 } }, "Refresh")),
+
+      /* committed */
+      h("div", { style:{ background: coverage.gap > 0 ? "rgba(196,85,61,0.13)" : C.panel,
+          border:`1px solid ${coverage.gap > 0 ? C.signal : C.line}`, padding:"15px", marginBottom:14 } },
+        h("div", { style:{ ...cap, letterSpacing:1.5 } }, "Committed before the next confirmed wire"),
+        h("div", { style:{ fontFamily:MONO, fontSize:34, fontWeight:700, letterSpacing:-0.8, marginTop:4, color:C.paper } }, usd(coverage.committed)),
+        h("div", { style:{ fontSize:12, color:C.dim, marginTop:4 } },
+          usd(openingBal), " on hand · next confirmed wire in ", coverage.days, " days"),
+        coverage.gap > 0 && h("div", { style:{ marginTop:11, paddingTop:10, borderTop:"1px solid rgba(196,85,61,0.35)" } },
+          h("div", { style:{ ...cap, fontSize:9.5, letterSpacing:1.1, color:C.signal } }, "Unfunded"),
+          h("div", { style:{ fontFamily:MONO, fontSize:23, fontWeight:700, color:C.signal, marginTop:3 } }, usd(coverage.gap)))),
+
+      /* stat strip */
+      h("div", { style:{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))", gap:8, marginBottom:16 } },
+        [{l:"Opening",v:usd(openingBal),c:C.paper},
+         {l:"Income in",v:usd(totalIn),c:C.green},
+         {l:"Bills out",v:usd(totalOut),c:C.signal},
+         {l:"Low point",v:usd(minBal),c:minBal<0?C.signal:C.brass},
+         {l:`Day ${horizon}`,v:usd(endBal),c:endBal<0?C.signal:C.paper},
+         {l:"Months covered",v:(endBal/monthlyBurn).toFixed(1),c:endBal/monthlyBurn<6?C.signal:C.green}
+        ].map(s => h("div", { key:s.l, style:card({ padding:"10px 11px" }) },
+          h("div", { style:{ ...cap, fontSize:9, letterSpacing:1.2 } }, s.l),
+          h("div", { style:{ fontFamily:MONO, fontSize:17, fontWeight:600, color:s.c, marginTop:3 } }, s.v)))),
+
+      /* alert */
+      alert && h("div", { style:{ background:"rgba(196,85,61,0.13)", border:`1px solid ${C.signal}`, padding:"13px 14px", marginBottom:16 } },
+        h("div", { style:{ display:"flex", justifyContent:"space-between", alignItems:"baseline", gap:10 } },
+          h("div", { style:{ ...cap, color:C.signal } }, alert.days <= warnDays ? "Act now" : "Shortfall ahead"),
+          h("div", { style:{ fontFamily:MONO, fontSize:22, fontWeight:700, color:C.signal } }, alert.days, "d")),
+        h("div", { style:{ fontSize:13.5, marginTop:5, lineHeight:1.5 } },
+          "Cash runs out ", alert.date.toLocaleDateString("en-US",{month:"long",day:"numeric"}),
+          ". Deepest point ", usd(alert.worst), "."),
+        h("div", { style:{ borderTop:"1px solid rgba(196,85,61,0.35)", marginTop:10, paddingTop:9 } },
+          h("div", { style:{ ...cap, fontSize:9.5, letterSpacing:1.1 } }, "Gross commission needed to close the gap"),
+          h("div", { style:{ fontFamily:MONO, fontSize:25, fontWeight:700, color:C.brass, marginTop:3 } }, usd(alert.need)),
+          h("div", { style:{ fontFamily:MONO, fontSize:10, color:C.dim, marginTop:2 } },
+            "≈ ", usd(alert.need/0.03), " in volume at 3% · must wire before ",
+            alert.date.toLocaleDateString("en-US",{month:"short",day:"numeric"})),
+          h("div", { style:{ marginTop:10, paddingTop:9, borderTop:"1px solid rgba(196,85,61,0.35)" } },
+            h("div", { style:{ ...cap, fontSize:9.5, letterSpacing:1.1 } }, "Sign a listing by"),
+            h("div", { style:{ fontFamily:MONO, fontSize:20, fontWeight:700, color:C.paper, marginTop:3 } },
+              signBy.toLocaleDateString("en-US",{month:"long",day:"numeric"})),
+            h("div", { style:{ fontFamily:MONO, fontSize:10, color:C.dim, marginTop:2 } },
+              "at ", dom, " days to close, anything signed later misses this cycle")))),
+
+      /* chart */
+      h("div", { style:card({ padding:"14px 8px 6px", marginBottom:18 }) },
+        h("div", { style:{ ...cap, padding:"0 8px 10px" } }, "Running balance"),
+        h(Spark, { data:chartData, target:savTarget })),
+
+      /* tabs */
+      h("div", { style:{ display:"flex", borderBottom:`1px solid ${C.line}`, marginBottom:14, flexWrap:"wrap" } },
+        [["calendar","Calendar"],["savings","Savings"],["deploy","Deploy"],["biz","Business"],
+         ["risk","Unknowns"],["pipeline","Pipeline"],["bills","Bills"],["loan","Family loan"],["settings","Settings"]
+        ].map(([k,l]) => h("button", { key:k, onClick:() => setTab(k),
+          style:{ background:"transparent", border:"none",
+            borderBottom:`2px solid ${tab===k?C.brass:"transparent"}`,
+            color: tab===k?C.paper:C.dim, fontFamily:MONO, fontSize:11, letterSpacing:1.2,
+            textTransform:"uppercase", padding:"9px 13px", cursor:"pointer" } }, l))),
+
+      /* ---- calendar ---- */
+      tab === "calendar" && h("div", null,
+        h("div", { style:card({ padding:"14px 15px", marginBottom:16, borderColor: slip>0?C.signal:C.line }) },
+          h("div", { style:{ display:"flex", justifyContent:"space-between", alignItems:"baseline" } },
+            h("span", { style:{ ...cap, color: slip>0?C.signal:C.dim } }, "Slip test — listings close late"),
+            h("span", { style:{ fontFamily:MONO, fontSize:17, fontWeight:700, color: slip>0?C.signal:C.brass } }, "+", slip, "d")),
+          h("input", { type:"range", min:"0", max:"90", step:"15", value:slip,
+            onChange:e => setSlip(parseInt(e.target.value)),
+            style:{ width:"100%", accentColor: slip>0?C.signal:C.brass, marginTop:9 } }),
+          h("div", { style:{ display:"flex", justifyContent:"space-between", fontFamily:MONO, fontSize:9, color:C.dim, marginTop:2 } },
+            [0,15,30,45,60,75,90].map(n => h("span", { key:n }, n))),
+          h("div", { style:{ fontSize:12, color:C.dim, marginTop:9, lineHeight:1.55 } },
+            "Every projected listing pushes back together. Watch the low point and the day-", horizon, " balance move.")),
+        events.map((e,i) => {
+          const prev = i>0 ? events[i-1].date : null;
+          const newMonth = !prev || prev.getMonth() !== e.date.getMonth();
+          return h("div", { key:i },
+            newMonth && h("div", { style:{ fontFamily:DISP, fontSize:15, letterSpacing:1.5, color:C.brass,
+                textTransform:"uppercase", padding:"16px 0 7px", borderBottom:`1px solid ${C.line}`, marginBottom:6 } },
+              e.date.toLocaleDateString("en-US",{month:"long",year:"numeric"})),
+            h("div", { style:{ display:"flex", alignItems:"center", gap:10, padding:"7px 0",
+                borderBottom:"1px solid rgba(44,64,59,0.4)" } },
+              h("div", { style:{ fontFamily:MONO, fontSize:10, color:C.dim, width:30, flexShrink:0, textAlign:"right" } }, e.date.getDate()),
+              h("div", { style:{ width:3, height:26, background:e.color, flexShrink:0 } }),
+              h("div", { style:{ flex:1, minWidth:0 } },
+                h("div", { style:{ fontSize:13, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" } }, e.label),
+                h("div", { style:{ fontFamily:MONO, fontSize:9.5, color:C.dim, letterSpacing:0.4 } }, e.sub)),
+              h("div", { style:{ textAlign:"right", flexShrink:0 } },
+                h("div", { style:{ fontFamily:MONO, fontSize:13, fontWeight:600, color: e.amt>0?C.green:C.paper } },
+                  e.amt>0?"+":"", usd(e.amt)),
+                h("div", { style:{ fontFamily:MONO, fontSize:9.5, color: e.bal<0?C.signal:C.dim } }, usd(e.bal)))));
+        })),
+
+      /* ---- pipeline ---- */
+      tab === "pipeline" && h("div", null,
+        h("div", { style:{ background:"rgba(192,143,74,0.1)", border:`1px solid ${C.brass}`, padding:"11px 13px", marginBottom:14 } },
+          h("div", { style:{ ...cap, color:C.brass } }, "Live from SureSend"),
+          h("div", { style:{ fontSize:12.5, color:C.dim, marginTop:4, lineHeight:1.55 } },
+            undatedList.length, " signed listings projected at ", dom, " days out. ",
+            excluded.length, " excluded: consultations, and buyer deals not under contract. ",
+            "Close date and commission edits stay local.")),
+        h("button", { onClick: () => setPipeline([...localDeals, { id:"m-"+Date.now(), name:"New deal",
+            side:"Listing", value:0, stage:"Under Contract", pos:6, close:"", rate:3 }]),
+          style:{ width:"100%", background:"transparent", border:`1px dashed ${C.brass}`, color:C.brass,
+            fontFamily:MONO, fontSize:11, letterSpacing:1.2, textTransform:"uppercase",
+            padding:"10px", marginBottom:10, cursor:"pointer" } }, "+ Add manual deal"),
+        pipeline.map(d => {
+          const gross = grossOf(d), net = netOf(d, houseSplit);
+          const pd = new Date(today); pd.setDate(pd.getDate() + dom);
+          const projDate = pd.toLocaleDateString("en-US",{month:"short",day:"numeric"});
+          const counted = counts(d);
+          return h("div", { key:d.id, style:card({ padding:"11px 12px", marginBottom:7, opacity: counted?1:0.45 }) },
+            h("div", { style:{ display:"flex", justifyContent:"space-between", gap:10, alignItems:"flex-start" } },
+              h("div", { style:{ minWidth:0 } },
+                h("div", { style:{ fontSize:13.5, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" } },
+                  d.name, !d.live && h("span", { style:{ fontFamily:MONO, fontSize:9, color:C.brass, marginLeft:6 } }, "MANUAL")),
+                h("div", { style:{ fontFamily:MONO, fontSize:9.5, color:C.dim, marginTop:2, letterSpacing:0.4 } },
+                  d.side, " · ", d.stage, " · ", usd(d.value)),
+                h("div", { style:{ fontFamily:MONO, fontSize:9.5, marginTop:2, letterSpacing:0.4,
+                    color: !counted?C.signal : d.close?C.green:C.brass } },
+                  !counted ? whyOut(d) : d.close ? "scheduled" : `projected ${projDate}`)),
+              h("div", { style:{ textAlign:"right", flexShrink:0 } },
+                h("div", { style:{ fontFamily:MONO, fontSize:14, fontWeight:600, color: counted?C.green:C.dim } },
+                  counted ? usd(net) : "—"),
+                h("div", { style:{ fontFamily:MONO, fontSize:9.5, color:C.dim } },
+                  d.net != null ? "net override"
+                    : `gross ${usd(gross)}${d.flat != null ? " flat" : (d.gross != null ? "" : " est")}`))),
+            h("div", { style:{ display:"flex", gap:8, marginTop:9, alignItems:"flex-end" } },
+              h("label", { style:{ flex:1 } },
+                h("div", { style:{ ...lbl, marginBottom:3 } }, "Close date"),
+                h("input", { type:"date", value:d.close || "",
+                  onChange: ev => updDeal(d.id, "close", ev.target.value), style:inp })),
+              h("label", { style:{ width: d.flat != null ? 96 : 78 } },
+                h("div", { style:{ ...lbl, marginBottom:3 } }, d.flat != null ? "Flat $" : "Comm %"),
+                h("input", { type:"number", step: d.flat != null ? 500 : 0.1,
+                  value: d.flat != null ? d.flat : d.rate,
+                  onChange: ev => updDeal(d.id, d.flat != null ? "flat" : "rate", parseFloat(ev.target.value) || 0),
+                  style:inp })),
+              !d.live && h("button", { onClick: () => setPipeline(localDeals.filter(x => String(x.id) !== String(d.id))),
+                title:"Remove manual deal",
+                style:{ background:"transparent", border:`1px solid ${C.line}`, color:C.dim,
+                  fontFamily:MONO, fontSize:15, lineHeight:1, padding:"6px 10px", cursor:"pointer" } }, "×")));
+        })),
+
+      /* ---- savings ---- */
+      tab === "savings" && h("div", null,
+        h("div", { style:card({ padding:"16px 15px", marginBottom:12 }) },
+          h("div", { style:{ ...cap, letterSpacing:1.5 } }, "True monthly burn"),
+          h("div", { style:{ fontFamily:MONO, fontSize:34, fontWeight:700, color:C.paper, marginTop:4, letterSpacing:-0.5 } }, usd(monthlyBurn)),
+          h("div", { style:{ fontSize:12, color:C.dim, marginTop:3 } },
+            "every bill + power averaged + Christmas and vacation spread monthly")),
+        h("div", { style:card({ padding:"15px", marginBottom:12, borderColor:C.signal }) },
+          h("div", { style:{ ...cap, color:C.signal } }, "Past due right now"),
+          h("div", { style:{ fontFamily:MONO, fontSize:28, fontWeight:700, color:C.signal, marginTop:4 } },
+            usd(arrears.reduce((t,r) => t+r.amt, 0))),
+          h("div", { style:{ fontSize:12, color:C.dim, marginTop:3 } }, "clears before any savings can start")),
+        h("div", { style:card({ padding:"15px", marginBottom:12, borderColor:C.signal }) },
+          h("div", { style:{ ...cap, color:C.signal } }, "Your $30,000 target is short"),
+          h("div", { style:{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginTop:11 } },
+            h("div", { style:{ background:C.panel2, padding:"10px 11px" } },
+              h("div", { style:lbl }, "$30,000 buys"),
+              h("div", { style:{ fontFamily:MONO, fontSize:21, fontWeight:600, color:C.signal, marginTop:3 } },
+                (30000/monthlyBurn).toFixed(1), " mo")),
+            h("div", { style:{ background:C.panel2, padding:"10px 11px" } },
+              h("div", { style:lbl }, "Six months costs"),
+              h("div", { style:{ fontFamily:MONO, fontSize:21, fontWeight:600, color:C.green, marginTop:3 } }, usd(sixMonth))))),
+        h("div", { style:card({ padding:"15px" }) },
+          h("div", { style:{ display:"flex", justifyContent:"space-between", marginBottom:6 } },
+            h("span", { style:{ ...cap, letterSpacing:1.2 } }, "Savings target"),
+            h("span", { style:{ fontFamily:MONO, fontSize:14, fontWeight:600, color:C.brass } }, usd(savTarget))),
+          h("input", { type:"range", min:"0", max:"90000", step:"1000", value:savTarget,
+            onChange:e => setSavTarget(parseInt(e.target.value)), style:{ width:"100%", accentColor:C.brass } }),
+          h("div", { style:{ fontFamily:MONO, fontSize:11, color:C.dim, marginTop:5 } },
+            (savTarget/monthlyBurn).toFixed(1), " months of runway"),
+          h("div", { style:{ borderTop:`1px solid ${C.line}`, marginTop:13, paddingTop:11 } },
+            h("div", { style:{ ...cap, fontSize:9.5, letterSpacing:1.1, marginBottom:6 } }, "Sinking funds"),
+            annual.map(a => h("div", { key:a.id, style:{ display:"flex", justifyContent:"space-between", padding:"5px 0", fontSize:12.5 } },
+              h("span", null, a.name),
+              h("span", { style:{ fontFamily:MONO, color:C.dim } }, usd(a.amt), "/yr · ", usd(a.amt/12), "/mo")))))),
+
+      /* ---- deploy ---- */
+      tab === "deploy" && h("div", null,
+        h("div", { style:card({ padding:"15px", marginBottom:12 }) },
+          h("div", { style:{ ...cap, letterSpacing:1.5, color:C.brass, marginBottom:11 } }, "Order of operations"),
+          [["1","Clear past due",gates.arrearsTot,"nothing starts until this is zero"],
+           ["2","One month buffer",monthlyBurn,"stops the overdraft cycle"],
+           ["3",`Family loan to ${usd(loanRunRate)}/mo`,gates.loanStep,"stops your parents' balance from growing"],
+           ["4",`${reserveMonths} months reserve`,gates.reserve,"the gate you asked for"],
+           ["5","Deploy surplus",null,"business and index funds"]
+          ].map(([n,label,amt,note]) => h("div", { key:n, style:{ display:"flex", gap:11, padding:"9px 0",
+              borderTop: n==="1"?"none":`1px solid ${C.line}` } },
+            h("div", { style:{ fontFamily:MONO, fontSize:15, color:C.brass, width:16, flexShrink:0 } }, n),
+            h("div", { style:{ flex:1, minWidth:0 } },
+              h("div", { style:{ fontSize:13 } }, label),
+              h("div", { style:{ fontFamily:MONO, fontSize:9.5, color:C.dim, marginTop:2 } }, note)),
+            h("div", { style:{ fontFamily:MONO, fontSize:13, fontWeight:600, color: amt?C.paper:C.green, flexShrink:0 } },
+              amt ? usd(amt) : "→")))),
+        h("div", { style:card({ padding:"16px 15px", marginBottom:12, borderColor:C.brass }) },
+          h("div", { style:{ ...cap, color:C.brass } }, "To clear every gate in 12 months"),
+          h("div", { style:{ fontFamily:MONO, fontSize:34, fontWeight:700, color:C.brass, marginTop:5, letterSpacing:-0.5 } }, usd(gates.gross)),
+          h("div", { style:{ fontSize:12, color:C.dim, marginTop:3 } },
+            "gross commission · ", usd(gates.need), " to the house at ", houseSplit, "%"),
+          h("div", { style:{ fontFamily:MONO, fontSize:11, color:C.dim, marginTop:7, paddingTop:9, borderTop:`1px solid ${C.line}` } },
+            "≈ ", usd(gates.volume), " in volume at 3%", h("br", null),
+            "≈ ", Math.ceil(gates.volume/700000), " closings at $700k average"),
+          (() => {
+            const booked = goal.closed + goal.projected;
+            const pct = Math.min(100, booked/gates.gross*100);
+            const pctHard = Math.min(100, goal.closed/gates.gross*100);
+            const gap = Math.max(0, gates.gross - booked);
+            return h("div", { style:{ marginTop:14, paddingTop:12, borderTop:`1px solid ${C.line}` } },
+              h("div", { style:{ display:"flex", justifyContent:"space-between", alignItems:"baseline" } },
+                h("span", { style:{ ...cap, fontSize:9.5, letterSpacing:1.2 } }, "Gap to goal"),
+                h("span", { style:{ fontFamily:MONO, fontSize:26, fontWeight:700, color: pct>=100?C.green:C.signal } },
+                  pct.toFixed(1), "%")),
+              h("div", { style:{ position:"relative", height:12, background:C.ground, marginTop:9, border:`1px solid ${C.line}` } },
+                h("div", { style:{ position:"absolute", inset:0, width:`${pct}%`, background:C.brass, opacity:0.4 } }),
+                h("div", { style:{ position:"absolute", inset:0, width:`${pctHard}%`, background:C.green } })),
+              h("div", { style:{ display:"flex", justifyContent:"space-between", fontFamily:MONO, fontSize:9, color:C.dim, marginTop:4 } },
+                h("span", null, "■ scheduled ", usd(goal.closed)),
+                h("span", null, "□ projected ", usd(goal.projected))),
+              h("div", { style:{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginTop:12 } },
+                h("div", { style:{ background:C.panel2, padding:"10px 11px" } },
+                  h("div", { style:lbl }, "Still needed"),
+                  h("div", { style:{ fontFamily:MONO, fontSize:19, fontWeight:700, color:C.signal, marginTop:3 } }, usd(gap)),
+                  h("div", { style:{ fontFamily:MONO, fontSize:9.5, color:C.dim } }, "gross commission")),
+                h("div", { style:{ background:C.panel2, padding:"10px 11px" } },
+                  h("div", { style:lbl }, "Per month"),
+                  h("div", { style:{ fontFamily:MONO, fontSize:19, fontWeight:700, color:C.brass, marginTop:3 } }, usd(gap/12)),
+                  h("div", { style:{ fontFamily:MONO, fontSize:9.5, color:C.dim } },
+                    (gap/12/(700000*0.03)).toFixed(1), " closings/mo"))));
+          })()),
+        h("div", { style:card({ padding:"15px" }) },
+          h("div", { style:{ ...cap, marginBottom:12 } }, "Surplus split, once gate 4 is funded"),
+          [["Business — lead gen, hires",splitBiz,setSplitBiz,C.brass],
+           ["S&P 500 index",splitIdx,setSplitIdx,C.green]
+          ].map(([l,v,set,col]) => h("div", { key:l, style:{ marginBottom:15 } },
+            h("div", { style:{ display:"flex", justifyContent:"space-between", marginBottom:5 } },
+              h("span", { style:{ fontSize:12.5 } }, l),
+              h("span", { style:{ fontFamily:MONO, fontSize:13, fontWeight:600, color:col } }, v, "%")),
+            h("input", { type:"range", min:"0", max:"100", step:"5", value:v,
+              onChange:e => set(parseInt(e.target.value)), style:{ width:"100%", accentColor:col } }))),
+          h("div", { style:{ display:"flex", justifyContent:"space-between", paddingTop:10, borderTop:`1px solid ${C.line}` } },
+            h("span", { style:{ fontSize:12.5, color:C.signal } }, "Accelerate family loan"),
+            h("span", { style:{ fontFamily:MONO, fontSize:13, fontWeight:600, color:C.signal } },
+              Math.max(0, 100-splitBiz-splitIdx), "%")),
+          splitBiz + splitIdx > 100 && h("div", { style:{ fontFamily:MONO, fontSize:10, color:C.signal, marginTop:7 } },
+            "Over 100% — pull one back")),
+        h("div", { style:{ background:C.panel2, border:`1px solid ${C.line}`, padding:"13px 14px", marginTop:12 } },
+          h("div", { style:{ ...cap, fontSize:9.5, letterSpacing:1.1, marginBottom:6 } }, "Why index funds sit third"),
+          h("div", { style:{ fontSize:12.5, color:C.dim, lineHeight:1.6 } },
+            "The S&P has returned about 10% a year long term. Your parents are paying 7.75% on ",
+            usd(loanBal), ". Buying index funds while that runs is a two point spread — with their money at risk, not yours."))),
+
+      /* ---- business ---- */
+      tab === "biz" && h("div", null,
+        h("div", { style:card({ padding:"16px 15px", marginBottom:12, borderColor: bizPL.marginMo<0?C.signal:C.green }) },
+          h("div", { style:{ ...cap, letterSpacing:1.5 } }, "Business margin, monthly"),
+          h("div", { style:{ fontFamily:MONO, fontSize:34, fontWeight:700, letterSpacing:-0.6, marginTop:4,
+              color: bizPL.marginMo<0?C.signal:C.green } }, usd(bizPL.marginMo)),
+          h("div", { style:{ fontSize:12, color:C.dim, marginTop:4 } },
+            usd(bizPL.revMo), "/mo in · ", usd(bizPL.costMo), "/mo out · ", bizPL.pct.toFixed(0), "% margin"),
+          h("div", { style:{ fontFamily:MONO, fontSize:10.5, color:C.dim, marginTop:9, paddingTop:9,
+              borderTop:`1px solid ${C.line}`, lineHeight:1.6 } },
+            "Revenue = the ", 100-houseSplit, "% that stays in the company, from counted pipeline spread over ",
+            horizon, " days.", bizPL.marginMo<0 && " Negative margin means Deploy gate 5 should not send money here.")),
+        biz.map(x => h("div", { key:x.id, style:card({ display:"flex", alignItems:"center", gap:10, padding:"9px 11px", marginBottom:6 }) },
+          h("div", { style:{ width:3, height:26, background:C.brass, flexShrink:0 } }),
+          h("div", { style:{ flex:1, fontSize:13 } }, x.name),
+          h("input", { type:"number", value:x.amt, step:"50",
+            onChange:e => setBiz(biz.map(b => b.id===x.id ? {...b, amt:parseFloat(e.target.value)||0} : b)),
+            style:{ ...inp, width:92 } }))),
+        h("div", { style:{ fontFamily:MONO, fontSize:10.5, color:C.dim, marginTop:12, lineHeight:1.6 } },
+          "Placeholders. Replace with real numbers — this is the half of your money the household model never sees.")),
+
+      /* ---- unknowns ---- */
+      tab === "risk" && h("div", null,
+        drawTotal > 0 && h("div", { style:card({ padding:"14px 15px", marginBottom:12, borderColor:C.signal }) },
+          h("div", { style:{ ...cap, color:C.signal } }, "Commission draws outstanding"),
+          h("div", { style:{ fontFamily:MONO, fontSize:28, fontWeight:700, color:C.signal, marginTop:4 } }, usd(drawTotal)),
+          h("div", { style:{ fontSize:12, color:C.dim, marginTop:4, lineHeight:1.55 } },
+            "Already advanced against commissions the CRM still shows as earned. ",
+            "Repaid out of the wire, so the calendar shows both the full commission in and the draw out."),
+          draws.map(w => h("div", { key:w.id, style:{ display:"flex", justifyContent:"space-between",
+              alignItems:"center", gap:10, paddingTop:10, marginTop:10, borderTop:`1px solid ${C.line}` } },
+            h("div", { style:{ minWidth:0 } },
+              h("div", { style:{ fontSize:13 } }, w.name),
+              h("div", { style:{ fontFamily:MONO, fontSize:9.5, color:C.dim, marginTop:2 } },
+                drawsUnscheduled.some(u => u.id === w.id) ? "no scheduled wire — unrepaid" : w.note)),
+            h("input", { type:"number", value:w.amt, step:"100",
+              onChange:e => setDraws(draws.map(x => x.id===w.id ? {...x, amt:parseFloat(e.target.value)||0} : x)),
+              style:{ ...inp, width:100, flexShrink:0 } })))),
+        h("div", { style:card({ padding:"14px 15px", marginBottom:12, borderColor:C.brass }) },
+          h("div", { style:{ ...cap, color:C.brass } }, "Known unknowns"),
+          h("div", { style:{ fontSize:12.5, color:C.dim, marginTop:5, lineHeight:1.55 } },
+            "Real obligations with no date or amount attached. They sit outside every projection on this dashboard.")),
+        liabs.map(x => h("div", { key:x.id, style:card({ padding:"12px 13px", marginBottom:7 }) },
+          h("div", { style:{ display:"flex", justifyContent:"space-between", gap:10 } },
+            h("div", { style:{ minWidth:0 } },
+              h("div", { style:{ fontSize:13.5 } }, x.name),
+              h("div", { style:{ fontFamily:MONO, fontSize:9.5, color:C.dim, marginTop:2 } }, x.note)),
+            h("div", { style:{ textAlign:"right", flexShrink:0 } },
+              h("div", { style:{ fontFamily:MONO, fontSize:14, fontWeight:600, color: x.amt?C.signal:C.brass } },
+                x.amt ? usd(x.amt) : "?"),
+              h("div", { style:{ fontFamily:MONO, fontSize:9, color:C.dim } }, x.when))),
+          h("input", { type:"number", value:x.amt, step:"500", placeholder:"amount",
+            onChange:e => setLiabs(liabs.map(l => l.id===x.id ? {...l, amt:parseFloat(e.target.value)||0} : l)),
+            style:{ ...inp, marginTop:9 } })))),
+
+      /* ---- bills ---- */
+      tab === "bills" && h("div", null,
+        bills.map(b => h("div", { key:b.id, style:card({ display:"flex", alignItems:"center", gap:9, padding:"9px 11px", marginBottom:6 }) },
+          h("div", { style:{ width:3, height:30, background:KIND_COLOR[b.kind], flexShrink:0 } }),
+          h("div", { style:{ flex:1, minWidth:0 } },
+            h("div", { style:{ fontSize:13 } }, b.name),
+            h("div", { style:{ fontFamily:MONO, fontSize:9.5, color:C.dim, letterSpacing:0.4 } },
+              b.kind, b.seasonal ? " · seasonal" : "")),
+          h("label", { style:{ width:52 } },
+            h("div", { style:{ ...lbl, fontSize:8.5, letterSpacing:0.8 } }, "Day"),
+            h("input", { type:"number", value:b.day, min:"1", max:"28",
+              onChange:e => upd(setBills, bills)(b.id, "day", parseInt(e.target.value)||1), style:inp })),
+          h("label", { style:{ width:86 } },
+            h("div", { style:{ ...lbl, fontSize:8.5, letterSpacing:0.8 } }, "Amount"),
+            h("input", { type:"number", value: b.seasonal ? POWER[today.getMonth()] : b.amt,
+              disabled:b.seasonal,
+              onChange:e => upd(setBills, bills)(b.id, "amt", parseFloat(e.target.value)||0),
+              style:{ ...inp, opacity: b.seasonal?0.5:1 } }))))),
+
+      /* ---- loan ---- */
+      tab === "loan" && h("div", null,
+        h("div", { style:card({ padding:"18px 16px", marginBottom:12, textAlign:"center", borderColor:C.signal }) },
+          h("div", { style:{ ...cap, letterSpacing:1.6, color:C.signal } }, "Interest your parents pay · per day"),
+          h("div", { style:{ fontFamily:MONO, fontSize:42, fontWeight:700, color:C.signal, letterSpacing:-1, marginTop:6 } }, usd(loan.daily)),
+          h("div", { style:{ fontSize:12, color:C.dim, marginTop:4 } },
+            "7.75% (prime + 1) on ", usd(loanBal), " · you owe principal only")),
+        h("div", { style:card({ padding:"14px" }) },
+          h("div", { style:{ ...cap, marginBottom:10 } }, "Your monthly payment"),
+          h("input", { type:"range", min:"600", max:"6000", step:"100", value:loanPay,
+            onChange:e => setLoanPay(parseInt(e.target.value)), style:{ width:"100%", accentColor:C.brass } }),
+          h("div", { style:{ fontFamily:MONO, fontSize:28, fontWeight:700, color:C.brass, marginTop:6 } },
+            usd(loanPay), h("span", { style:{ fontSize:13, color:C.dim, fontWeight:400 } }, "/mo")),
+          h("div", { style:{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginTop:14 } },
+            h("div", { style:{ background:C.panel2, padding:"10px 11px" } },
+              h("div", { style:lbl }, "Payoff"),
+              h("div", { style:{ fontFamily:MONO, fontSize:19, fontWeight:600, marginTop:3 } }, (loan.months/12).toFixed(1), " yr"),
+              h("div", { style:{ fontFamily:MONO, fontSize:10, color:C.dim } }, "you're ", 41 + Math.round(loan.months/12))),
+            h("div", { style:{ background:C.panel2, padding:"10px 11px" } },
+              h("div", { style:lbl }, "Their interest"),
+              h("div", { style:{ fontFamily:MONO, fontSize:19, fontWeight:600, color:C.signal, marginTop:3 } }, usd(loan.parentInt)),
+              h("div", { style:{ fontFamily:MONO, fontSize:10, color:C.dim } }, "total cost to them"))),
+          h("div", { style:{ fontSize:12, color:C.dim, marginTop:12, lineHeight:1.55 } },
+            "Balance is derived, not verified with your uncle. Confirm before trusting the payoff date."))),
+
+      /* ---- settings ---- */
+      tab === "settings" && h("div", { style:card({ padding:"14px" }) },
+        [["Opening balance",openingBal,setOpeningBal,0,50000,500],
+         ["House split %",houseSplit,setHouseSplit,0,100,5],
+         ["Wire lag (days)",lagDays,setLagDays,0,14,1],
+         ["Horizon (days)",horizon,setHorizon,30,365,30],
+         ["Listing days to close",dom,setDom,30,240,5],
+         ["Warning window (days)",warnDays,setWarnDays,7,120,7],
+         ["Reserve months",reserveMonths,setReserveMonths,1,12,1],
+         ["Family loan run rate",loanRunRate,setLoanRunRate,600,6000,100],
+         ["Loan balance",loanBal,setLoanBal,0,600000,5000]
+        ].map(([l,v,set,mn,mx,st]) => h("div", { key:l, style:{ marginBottom:18 } },
+          h("div", { style:{ display:"flex", justifyContent:"space-between", marginBottom:5 } },
+            h("span", { style:{ ...cap, letterSpacing:1.2 } }, l),
+            h("span", { style:{ fontFamily:MONO, fontSize:13, fontWeight:600, color:C.brass } },
+              l.toLowerCase().includes("balance") ? usd(v) : v)),
+          h("input", { type:"range", min:mn, max:mx, step:st, value:v,
+            onChange:e => set(parseInt(e.target.value)), style:{ width:"100%", accentColor:C.brass } }))),
+        h("label", { style:{ display:"flex", alignItems:"center", gap:9, cursor:"pointer",
+            paddingTop:6, borderTop:`1px solid ${C.line}` } },
+          h("input", { type:"checkbox", checked:weighted, onChange:e => setWeighted(e.target.checked),
+            style:{ width:17, height:17, accentColor:C.brass } }),
+          h("div", null,
+            h("div", { style:{ fontSize:13 } }, "Probability-weight income"),
+            h("div", { style:{ fontFamily:MONO, fontSize:9.5, color:C.dim } }, "discount closings by stage odds"))),
+        h("button", { onClick: () => { if (confirm("Clear all local edits and reload from SureSend?")) {
+              localStorage.removeItem(KEY); location.reload(); } },
+          style:{ width:"100%", marginTop:18, background:"transparent", border:`1px solid ${C.signal}`,
+            color:C.signal, fontFamily:MONO, fontSize:10.5, letterSpacing:1.2, textTransform:"uppercase",
+            padding:"10px", cursor:"pointer" } }, "Reset local data")),
+
+      h("div", { style:{ fontFamily:MONO, fontSize:10, color:C.dim, textAlign:"center",
+          marginTop:30, lineHeight:1.7, letterSpacing:0.4 } },
+        feedState === "ok"
+          ? `Live from SureSend · ${pipeline.length} deals · ${livePipeline.length} from CRM`
+          : feedState === "loading" ? "Loading pipeline from SureSend…"
+          : `Feed failed — showing saved deals only`,
+        h("br", null),
+        "Close date and commission edits stay local — not written back to SureSend")));
 }
-const inp = {
-  width: "100%",
-  background: C.ground,
-  border: `1px solid ${C.line}`,
-  color: C.paper,
-  fontFamily: MONO,
-  fontSize: 12,
-  padding: "5px 7px",
-  borderRadius: 0,
-  boxSizing: "border-box"
-};
 
 /* ---------- tiny SVG chart, no dependencies ---------- */
-function Spark({
-  data,
-  target
-}) {
+function Spark({ data, target }) {
   if (!data.length) return null;
-  const W = 640,
-    H = 190,
-    PAD = 30;
+  const W = 640, H = 190, PAD = 30;
   const vals = data.map(d => d.bal).concat([0, target]);
-  const lo = Math.min(...vals),
-    hi = Math.max(...vals);
+  const lo = Math.min(...vals), hi = Math.max(...vals);
   const span = hi - lo || 1;
-  const x = i => PAD + i / Math.max(1, data.length - 1) * (W - PAD - 8);
-  const y = v => H - 22 - (v - lo) / span * (H - 42);
+  const x = i => PAD + i / Math.max(1, data.length-1) * (W - PAD - 8);
+  const y = v => H - 22 - (v - lo)/span * (H - 42);
   let d = "";
   data.forEach((p, i) => {
-    if (i === 0) d += `M ${x(i)} ${y(p.bal)}`;else d += ` L ${x(i)} ${y(data[i - 1].bal)} L ${x(i)} ${y(p.bal)}`;
+    if (i === 0) d += `M ${x(i)} ${y(p.bal)}`;
+    else d += ` L ${x(i)} ${y(data[i-1].bal)} L ${x(i)} ${y(p.bal)}`;
   });
-  return /*#__PURE__*/React.createElement("svg", {
-    viewBox: `0 0 ${W} ${H}`,
-    style: {
-      width: "100%",
-      height: 190,
-      display: "block"
-    }
-  }, /*#__PURE__*/React.createElement("line", {
-    x1: PAD,
-    x2: W - 8,
-    y1: y(0),
-    y2: y(0),
-    stroke: C.signal,
-    strokeDasharray: "3 3",
-    strokeWidth: "1"
-  }), /*#__PURE__*/React.createElement("line", {
-    x1: PAD,
-    x2: W - 8,
-    y1: y(target),
-    y2: y(target),
-    stroke: C.green,
-    strokeDasharray: "2 5",
-    strokeWidth: "1"
-  }), /*#__PURE__*/React.createElement("text", {
-    x: "2",
-    y: y(0) + 3,
-    fill: C.dim,
-    fontSize: "9",
-    fontFamily: MONO
-  }, "0"), /*#__PURE__*/React.createElement("text", {
-    x: "2",
-    y: y(target) + 3,
-    fill: C.green,
-    fontSize: "9",
-    fontFamily: MONO
-  }, Math.round(target / 1000), "k"), /*#__PURE__*/React.createElement("path", {
-    d: d,
-    fill: "none",
-    stroke: C.brass,
-    strokeWidth: "2"
-  }), /*#__PURE__*/React.createElement("text", {
-    x: PAD,
-    y: H - 5,
-    fill: C.dim,
-    fontSize: "9",
-    fontFamily: MONO
-  }, data[0].d), /*#__PURE__*/React.createElement("text", {
-    x: W - 8,
-    y: H - 5,
-    fill: C.dim,
-    fontSize: "9",
-    fontFamily: MONO,
-    textAnchor: "end"
-  }, data[data.length - 1].d));
+  return h("svg", { viewBox:`0 0 ${W} ${H}`, style:{ width:"100%", height:190, display:"block" } },
+    h("line", { x1:PAD, x2:W-8, y1:y(0), y2:y(0), stroke:C.signal, strokeDasharray:"3 3", strokeWidth:"1" }),
+    h("line", { x1:PAD, x2:W-8, y1:y(target), y2:y(target), stroke:C.green, strokeDasharray:"2 5", strokeWidth:"1" }),
+    h("text", { x:"2", y:y(0)+3, fill:C.dim, fontSize:"9", fontFamily:MONO }, "0"),
+    h("text", { x:"2", y:y(target)+3, fill:C.green, fontSize:"9", fontFamily:MONO }, Math.round(target/1000), "k"),
+    h("path", { d:d, fill:"none", stroke:C.brass, strokeWidth:"2" }),
+    h("text", { x:PAD, y:H-5, fill:C.dim, fontSize:"9", fontFamily:MONO }, data[0].d),
+    h("text", { x:W-8, y:H-5, fill:C.dim, fontSize:"9", fontFamily:MONO, textAnchor:"end" }, data[data.length-1].d));
 }
-ReactDOM.createRoot(document.getElementById("root")).render(/*#__PURE__*/React.createElement(App, null));
+
+ReactDOM.createRoot(document.getElementById("root")).render(h(App, null));
 } catch (e) { showErr('APP ERROR: ' + (e && e.stack ? e.stack : e)); }
 </script>
 </body>
